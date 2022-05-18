@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { Controls, CameraViewPoint } from "../Controls/index";
+import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 export default class Scene {
   container: HTMLDivElement;
@@ -9,6 +10,14 @@ export default class Scene {
   renderer: THREE.WebGLRenderer;
   controls: TrackballControls;
   sceneName: string = "";
+  clock: THREE.Clock = new THREE.Clock();
+  private directionalLight: THREE.DirectionalLight;
+  private ambientLight: THREE.AmbientLight;
+  private mixer: THREE.AnimationMixer | null = null;
+  private gltfLoader: GLTFLoader = new GLTFLoader();
+  private copperControl: Controls;
+  private modelReady: boolean = false;
+
   constructor(container: HTMLDivElement, renderer: THREE.WebGLRenderer) {
     this.container = container;
     this.scene = new THREE.Scene();
@@ -19,7 +28,10 @@ export default class Scene {
       1000
     );
     this.renderer = renderer;
+    this.ambientLight = new THREE.AmbientLight(0x202020);
+    this.directionalLight = new THREE.DirectionalLight(0x777777);
 
+    this.copperControl = new Controls(this.camera);
     this.init();
     this.controls = new TrackballControls(
       this.camera,
@@ -28,26 +40,85 @@ export default class Scene {
   }
 
   init() {
-    this.scene.add(new THREE.AxesHelper(5));
+    this.copperControl.setCameraViewPoint();
     this.camera.position.z = 2;
+    this.scene.add(this.ambientLight);
+    this.scene.add(this.directionalLight);
     this.renderer.setSize(
       this.container.clientWidth,
       this.container.clientHeight
     );
     this.container.appendChild(this.renderer.domElement);
     this.container.addEventListener("resize", this.onWindowResize, false);
-    this.createDemoMesh();
+  }
+
+  loadGltf(url: string) {
+    this.gltfLoader.load(
+      url,
+      (gltf: GLTF) => {
+        this.mixer = new THREE.AnimationMixer(gltf.scene);
+        console.log(gltf.animations);
+        gltf.animations.forEach((a: THREE.AnimationClip) => {
+          this.mixer && this.mixer.clipAction(a).play();
+        });
+        this.scene.add(gltf.scene);
+        this.modelReady = true;
+      },
+      (error) => {
+        // console.log(error);
+      }
+    );
+  }
+
+  loadMetadataUrl(url: string) {
+    const xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = () => {
+      if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        const metadata = JSON.parse(xmlhttp.responseText) as any[];
+        const numberOfMetadata = metadata.length;
+        if (numberOfMetadata === 1) {
+        } else if (numberOfMetadata > 1) {
+        } else {
+          console.error("Empty metadata!");
+        }
+      }
+    };
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+  }
+
+  loadViewUrl(url: string) {
+    const xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = () => {
+      if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        const viewpointData = JSON.parse(xmlhttp.responseText);
+        this.loadView(viewpointData);
+      }
+    };
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+  }
+
+  loadView(viewpointData: CameraViewPoint) {
+    const viewpoint = new CameraViewPoint();
+    viewpoint.farPlane = viewpointData.farPlane;
+    viewpoint.nearPlane = viewpointData.nearPlane;
+    viewpoint.eyePosition = viewpointData.eyePosition;
+    viewpoint.targetPosition = viewpointData.targetPosition;
+    viewpoint.upVector = viewpointData.upVector;
+    this.copperControl.updateCameraViewPoint(viewpoint);
   }
 
   createDemoMesh() {
     const geometry = new THREE.BoxGeometry();
-    const material = new THREE.MeshBasicMaterial({
+    const material = new THREE.MeshPhongMaterial({
       color: 0x00ff00,
-      wireframe: true,
+      // wireframe: true,
     });
 
     const cube = new THREE.Mesh(geometry, material);
     this.scene.add(cube);
+    this.scene.add(new THREE.AxesHelper(5));
   }
 
   onWindowResize() {
@@ -63,6 +134,10 @@ export default class Scene {
   render() {
     this.onWindowResize();
     this.controls.update();
+    if (this.modelReady) {
+      this.mixer && this.mixer.update(this.clock.getDelta());
+    }
+    this.copperControl.updateDirectionalLight(this.directionalLight);
     this.renderer.render(this.scene, this.camera);
   }
 }
