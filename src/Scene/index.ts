@@ -1,62 +1,68 @@
 import * as THREE from "three";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 export default class Scene {
-  baseContainer: HTMLDivElement;
-  renderer: THREE.WebGLRenderer;
+  container: HTMLDivElement;
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
+  renderer: THREE.WebGLRenderer;
   controls: TrackballControls;
-  constructor(container: HTMLDivElement) {
-    this.baseContainer = container;
-    this.renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: true,
-    });
+  sceneName: string = "";
+  constructor(container: HTMLDivElement, renderer: THREE.WebGLRenderer) {
+    this.container = container;
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(
-      40,
+      75,
       container.clientWidth / container.clientHeight,
-      0.0,
-      10
+      0.1,
+      1000
     );
+    this.renderer = renderer;
+
+    this.init();
     this.controls = new TrackballControls(
       this.camera,
       this.renderer.domElement
     );
   }
+
   init() {
-    this.baseContainer.appendChild(this.renderer.domElement);
-    const ambientLight = new THREE.AmbientLight(new THREE.Color(0x202020));
-    const directionalLight = new THREE.DirectionalLight(
-      new THREE.Color(0x777777)
+    this.scene.add(new THREE.AxesHelper(5));
+    this.camera.position.z = 2;
+    this.renderer.setSize(
+      this.container.clientWidth,
+      this.container.clientHeight
     );
-    this.scene.add(ambientLight);
-    this.scene.add(directionalLight);
-
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshPhongMaterial({ color: 0xff6347 });
-    const mesh = new THREE.Mesh(geometry, material);
-
-    this.scene.add(mesh);
+    this.container.appendChild(this.renderer.domElement);
+    this.container.addEventListener("resize", this.onWindowResize, false);
+    this.createDemoMesh();
   }
-  resizeRendererToDisplaySize = () => {
-    const width = this.renderer.domElement.clientWidth;
-    const height = this.renderer.domElement.clientHeight;
-    const needResize: boolean =
-      this.renderer.domElement.width !== width ||
-      this.renderer.domElement.height !== height;
-    if (needResize) {
-      this.camera.aspect = width / height;
-      this.camera.updateProjectionMatrix();
-      this.renderer.setSize(width, height, false);
-    }
-  };
 
-  animate = () => {
-    this.resizeRendererToDisplaySize();
+  createDemoMesh() {
+    const geometry = new THREE.BoxGeometry();
+    const material = new THREE.MeshBasicMaterial({
+      color: 0x00ff00,
+      wireframe: true,
+    });
+
+    const cube = new THREE.Mesh(geometry, material);
+    this.scene.add(cube);
+  }
+
+  onWindowResize() {
+    this.camera.aspect =
+      this.container.clientWidth / this.container.clientHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(
+      this.container.clientWidth,
+      this.container.clientHeight
+    );
+  }
+
+  render() {
+    this.onWindowResize();
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
-    window.requestAnimationFrame(this.animate);
-  };
+  }
 }
