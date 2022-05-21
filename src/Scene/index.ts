@@ -1,7 +1,10 @@
 import * as THREE from "three";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls";
 import { Controls, CameraViewPoint } from "../Controls/index";
+import { createBackground, customMeshType } from "../lib/three-vignette";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+
+const IS_IOS = isIOS();
 
 export default class Scene {
   container: HTMLDivElement;
@@ -10,12 +13,17 @@ export default class Scene {
   renderer: THREE.WebGLRenderer;
   controls: TrackballControls;
   sceneName: string = "";
+  vignette: customMeshType;
   clock: THREE.Clock = new THREE.Clock();
   private directionalLight: THREE.DirectionalLight;
   private ambientLight: THREE.AmbientLight;
   private mixer: THREE.AnimationMixer | null = null;
   private gltfLoader: GLTFLoader = new GLTFLoader();
   private copperControl: Controls;
+  private color1: string = "#161515";
+  // private color1: string = "#5454ad";
+  private color2: string = "#18e5a7";
+
   private modelReady: boolean = false;
 
   constructor(container: HTMLDivElement, renderer: THREE.WebGLRenderer) {
@@ -25,13 +33,20 @@ export default class Scene {
       75,
       container.clientWidth / container.clientHeight,
       0.1,
-      1000
+      500
     );
     this.renderer = renderer;
     this.ambientLight = new THREE.AmbientLight(0x202020);
     this.directionalLight = new THREE.DirectionalLight(0x777777);
 
     this.copperControl = new Controls(this.camera);
+
+    this.vignette = createBackground({
+      aspect: this.container.clientWidth / this.container.clientHeight,
+      grainScale: IS_IOS ? 0 : 0.001,
+      colors: [this.color1, this.color2],
+    });
+    (this.vignette.name = "Vignette"), (this.vignette.renderOrder = -1);
     this.init();
     this.controls = new TrackballControls(
       this.camera,
@@ -42,6 +57,7 @@ export default class Scene {
   init() {
     this.copperControl.setCameraViewPoint();
     this.camera.position.z = 2;
+
     this.scene.add(this.ambientLight);
     this.scene.add(this.directionalLight);
     this.renderer.setSize(
@@ -52,12 +68,17 @@ export default class Scene {
     this.container.addEventListener("resize", this.onWindowResize, false);
   }
 
+  updateBackground(color1: string, color2: string) {
+    this.vignette.style({
+      colors: [color1, color2],
+    });
+  }
+
   loadGltf(url: string) {
     this.gltfLoader.load(
       url,
       (gltf: GLTF) => {
         this.mixer = new THREE.AnimationMixer(gltf.scene);
-        console.log(gltf.animations);
         gltf.animations.forEach((a: THREE.AnimationClip) => {
           this.mixer && this.mixer.clipAction(a).play();
         });
@@ -125,6 +146,7 @@ export default class Scene {
     this.camera.aspect =
       this.container.clientWidth / this.container.clientHeight;
     this.camera.updateProjectionMatrix();
+    this.vignette.style({ aspect: this.camera.aspect });
     this.renderer.setSize(
       this.container.clientWidth,
       this.container.clientHeight
@@ -140,4 +162,18 @@ export default class Scene {
     this.copperControl.updateDirectionalLight(this.directionalLight);
     this.renderer.render(this.scene, this.camera);
   }
+}
+
+function isIOS() {
+  return (
+    [
+      "iPad Simulator",
+      "iPhone Simulator",
+      "iPod Simulator",
+      "iPad",
+      "iPhone",
+      "iPod",
+    ].includes(navigator.platform) ||
+    (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+  );
 }
