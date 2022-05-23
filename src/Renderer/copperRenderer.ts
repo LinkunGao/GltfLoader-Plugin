@@ -3,20 +3,46 @@ import Scene from "../Scene/copperScene";
 import { customMeshType } from "../lib/three-vignette";
 import { environments, environmentType } from "../lib/environment/index";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
+import Stats from "three/examples/jsm/libs/stats.module";
+import { GUI } from "dat.gui";
 
 interface SceneMapType {
   [key: string]: Scene;
+}
+interface optType {
+  guiOpen: boolean;
+  [key: string]: string | boolean;
+}
+interface stateType {
+  playbackSpeed: number;
+  wireframe: boolean;
+  skeleton: boolean;
+  grid: boolean;
+  // Lights
+  addLights: boolean;
+  exposure: number;
+  ambientIntensity: number;
+  ambientColor: number;
+  directIntensity: number;
+  directColor: number;
+  bgColor1: string;
+  bgColor2: string;
+  [key: string]: string | number | boolean | {};
 }
 
 export default class Renderer {
   container: HTMLDivElement;
   renderer: THREE.WebGLRenderer;
+  gui: GUI | null;
   private currentScene: Scene;
   private sceneMap: SceneMapType = {};
-
+  private options: optType | undefined;
+  private state: stateType;
   private pmremGenerator: THREE.PMREMGenerator;
-  constructor(container: HTMLDivElement) {
+  private stats: Stats;
+  constructor(container: HTMLDivElement, options?: optType) {
     this.container = container;
+    this.options = options;
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
     });
@@ -25,10 +51,38 @@ export default class Renderer {
     // this.renderer.setClearColor(0xffffff, 1);
     this.pmremGenerator = new THREE.PMREMGenerator(this.renderer);
     this.pmremGenerator.compileEquirectangularShader();
+    this.renderer.setPixelRatio(window.devicePixelRatio);
 
     this.currentScene = new Scene(this.container, this.renderer);
-  }
 
+    this.stats = Stats();
+    this.gui = null;
+    this.state = {
+      playbackSpeed: 1.0,
+      wireframe: false,
+      skeleton: false,
+      grid: false,
+      // Lights
+      addLights: true,
+      exposure: 1.0,
+      ambientIntensity: 0.3,
+      ambientColor: 0xffffff,
+      directIntensity: 0.8 * Math.PI,
+      directColor: 0xffffff,
+      bgColor1: "#5454ad",
+      bgColor2: "#18e5a7",
+    };
+    this.init();
+  }
+  init() {
+    if (this.options?.guiOpen && !this.gui) {
+      this.addGui();
+    }
+    [].forEach.call(
+      this.stats.dom.children,
+      (child) => ((child as any).style.display = "")
+    );
+  }
   updateEnvironment(vignette?: customMeshType) {
     const environment = environments.filter(
       (entry) => entry.name === "Venice Sunset"
@@ -80,16 +134,51 @@ export default class Renderer {
     } else {
       const new_scene = new Scene(this.container, this.renderer);
       new_scene.sceneName = name;
-
       this.updateEnvironment(new_scene.vignette);
       this.sceneMap[name] = new_scene;
       return new_scene;
     }
   }
 
+  closeGui() {
+    this.gui && this.gui.hide();
+  }
+
+  addGui() {
+    const gui = (this.gui = new GUI({
+      width: 260,
+    }));
+    const modelFolder = gui.addFolder("ModelFolder");
+    const wireframeCtrl = modelFolder.add(this.state, "wireframe");
+    wireframeCtrl.onChange(() => this.currentScene.updateDisplay(this.state));
+
+    const bgColor1Ctrl = modelFolder.addColor(this.state, "bgColor1");
+    const bgColor2Ctrl = modelFolder.addColor(this.state, "bgColor2");
+    bgColor1Ctrl.onChange(() =>
+      this.currentScene.updateBackground(
+        this.state.bgColor1,
+        this.state.bgColor2
+      )
+    );
+    bgColor2Ctrl.onChange(() =>
+      this.currentScene.updateBackground(
+        this.state.bgColor1,
+        this.state.bgColor2
+      )
+    );
+    // Performance
+    const perfFolder = gui.addFolder("Performance");
+    const perfLi = document.createElement("li");
+    this.stats.dom.style.position = "static";
+    perfLi.appendChild(this.stats.dom);
+    perfLi.style.height = "50px";
+    (perfFolder as any).__ul.appendChild(perfLi);
+  }
+
   onWindowResize() {}
   animate = () => {
     this.render();
+    this.stats.update();
     requestAnimationFrame(this.animate);
   };
   render() {

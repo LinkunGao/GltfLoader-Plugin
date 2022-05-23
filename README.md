@@ -2,6 +2,32 @@
 
 ## Useage
 
+- Load demo
+
+```ts
+import * as Copper from "gltfloader-plugin-test";
+import { getCurrentInstance, onMounted } from "vue";
+let refs = null;
+let appRenderer;
+onMounted(() => {
+  let { $refs } = (getCurrentInstance() as any).proxy;
+  refs = $refs;
+  const bg: HTMLDivElement = refs.classfy;
+  appRenderer = new Copper.Renderer(bg);
+  const scene = appRenderer.getCurrentScene();
+  scene.createDemoMesh();
+  appRenderer.animate();
+});
+```
+
+- Add options (curently only control gui)
+
+```ts
+appRenderer = new Copper.Renderer(bg, { guiOpen: true });
+```
+
+- Load multiple scenes with gltf-loader
+
 ```ts
 import * as Copper from "gltfloader-plugin-test";
 import { getCurrentInstance, onMounted } from "vue";
