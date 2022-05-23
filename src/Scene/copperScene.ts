@@ -29,7 +29,8 @@ export default class Scene {
   private copperControl: Controls;
   private color1: string = "#5454ad";
   private color2: string = "#18e5a7";
-
+  private lights: any[] = [];
+  private cameraPositionFlag = false;
   private modelReady: boolean = false;
 
   constructor(container: HTMLDivElement, renderer: THREE.WebGLRenderer) {
@@ -43,7 +44,7 @@ export default class Scene {
     );
     this.renderer = renderer;
     this.ambientLight = new THREE.AmbientLight(0x202020, 1);
-    this.directionalLight = new THREE.DirectionalLight(0x777777, 1);
+    this.directionalLight = new THREE.DirectionalLight(0xffffff, 2.5);
 
     this.copperControl = new Controls(this.camera);
 
@@ -66,16 +67,35 @@ export default class Scene {
     this.copperControl.setCameraViewPoint();
     this.camera.position.z = 2;
 
-    this.scene.add(this.ambientLight);
-    // this.scene.add(this.directionalLight);
-    this.camera.add(this.directionalLight);
     this.renderer.setSize(
       this.container.clientWidth,
       this.container.clientHeight
     );
     this.container.appendChild(this.renderer.domElement);
-
+    this.addLights();
     this.container.addEventListener("resize", this.onWindowResize, false);
+  }
+
+  addLights() {
+    const hemiLight = new THREE.HemisphereLight();
+    hemiLight.name = "hemi_light";
+    this.scene.add(hemiLight);
+    // this.scene.add(this.ambientLight);
+    // this.scene.add(this.directionalLight);
+    this.ambientLight.name = "ambient_light";
+    this.directionalLight.name = "main_light";
+    this.directionalLight.position.set(0.5, 0, 0.866);
+    this.camera.add(this.ambientLight);
+    this.camera.add(this.directionalLight);
+    this.lights.push(hemiLight);
+    this.lights.push(this.ambientLight);
+    this.lights.push(this.directionalLight);
+  }
+  removeLights() {
+    if (this.lights) {
+      this.lights.forEach((light) => light.parent.remove(light));
+      this.lights.length = 0;
+    }
   }
 
   loadGltf(url: string) {
@@ -92,6 +112,14 @@ export default class Scene {
         gltf.scene.position.x += gltf.scene.position.x - center.x;
         gltf.scene.position.y += gltf.scene.position.y - center.y;
         gltf.scene.position.z += gltf.scene.position.z - center.z;
+
+        if (!this.cameraPositionFlag) {
+          this.camera.position.copy(center);
+          this.camera.position.x += size / 2.0;
+          this.camera.position.y += size / 5.0;
+          this.camera.position.z += size / 2.0;
+          this.camera.lookAt(center);
+        }
 
         this.mixer = new THREE.AnimationMixer(gltf.scene);
         gltf.animations.forEach((a: THREE.AnimationClip) => {
@@ -137,6 +165,7 @@ export default class Scene {
   }
 
   loadView(viewpointData: CameraViewPoint) {
+    this.cameraPositionFlag = true;
     const viewpoint = new CameraViewPoint();
     viewpoint.farPlane = viewpointData.farPlane;
     viewpoint.nearPlane = viewpointData.nearPlane;
@@ -144,6 +173,23 @@ export default class Scene {
     viewpoint.targetPosition = viewpointData.targetPosition;
     viewpoint.upVector = viewpointData.upVector;
     this.copperControl.updateCameraViewPoint(viewpoint);
+  }
+
+  updateLights(state: stateType) {
+    const lights = this.lights;
+
+    if (state.addLights && !lights.length) {
+      this.addLights();
+    } else if (!state.addLights && lights.length) {
+      this.removeLights();
+    }
+
+    if (lights.length === 2) {
+      lights[0].intensity = state.ambientIntensity;
+      lights[0].color.setHex(state.ambientColor);
+      lights[1].intensity = state.directIntensity;
+      lights[1].color.setHex(state.directColor);
+    }
   }
 
   updateDisplay(state: stateType) {
@@ -186,7 +232,7 @@ export default class Scene {
     if (this.modelReady) {
       this.mixer && this.mixer.update(this.clock.getDelta());
     }
-    this.copperControl.updateDirectionalLight(this.directionalLight);
+    // this.copperControl.updateDirectionalLight(this.directionalLight);
     this.renderer.render(this.scene, this.camera);
   }
 }

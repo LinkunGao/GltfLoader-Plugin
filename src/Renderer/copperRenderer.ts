@@ -66,7 +66,7 @@ export default class Renderer {
       addLights: true,
       exposure: 1.0,
       ambientIntensity: 0.3,
-      ambientColor: 0xffffff,
+      ambientColor: 0x202020,
       directIntensity: 0.8 * Math.PI,
       directColor: 0xffffff,
       bgColor1: "#5454ad",
@@ -152,6 +152,7 @@ export default class Renderer {
     const wireframeCtrl = modelFolder.add(this.state, "wireframe");
     wireframeCtrl.onChange(() => this.currentScene.updateDisplay(this.state));
 
+    // bg
     const bgColor1Ctrl = modelFolder.addColor(this.state, "bgColor1");
     const bgColor2Ctrl = modelFolder.addColor(this.state, "bgColor2");
     bgColor1Ctrl.onChange(() =>
@@ -173,6 +174,26 @@ export default class Renderer {
     perfLi.appendChild(this.stats.dom);
     perfLi.style.height = "50px";
     (perfFolder as any).__ul.appendChild(perfLi);
+
+    // lights
+    const lightFolder = gui.addFolder("LightsFolder");
+    // const lightCtrl = lights.add(this.state, "addLights");
+    // lightCtrl.onChange((flag) => {
+    //   if (flag) {
+    //     this.currentScene.addLights();
+    //   } else {
+    //     this.currentScene.removeLights();
+    //   }
+    // });
+    [
+      lightFolder.add(this.state, "addLights").listen(),
+      lightFolder.add(this.state, "ambientIntensity", 0, 2),
+      lightFolder.addColor(this.state, "ambientColor"),
+      lightFolder.add(this.state, "directIntensity", 0, 4), // TODO(#116)
+      lightFolder.addColor(this.state, "directColor"),
+    ].forEach((ctrl) =>
+      ctrl.onChange(() => this.currentScene.updateLights(this.state))
+    );
   }
 
   onWindowResize() {}
