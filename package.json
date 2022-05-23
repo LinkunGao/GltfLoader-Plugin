@@ -18,8 +18,8 @@
     "url": "git+https://github.com/LinkunGao/GltfLoader-Plugin.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Linkun Gao",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/LinkunGao/GltfLoader-Plugin/issues"
   },

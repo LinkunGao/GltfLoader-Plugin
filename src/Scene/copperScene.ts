@@ -206,8 +206,8 @@ export default class Scene {
   createDemoMesh() {
     const geometry = new THREE.BoxGeometry();
     const material = new THREE.MeshPhongMaterial({
-      color: 0x00ff00,
-      // wireframe: true,
+      color: 0xff00ff,
+      wireframe: true,
     });
 
     const cube = new THREE.Mesh(geometry, material);

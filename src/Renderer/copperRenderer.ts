@@ -54,7 +54,7 @@ export default class Renderer {
     this.renderer.setPixelRatio(window.devicePixelRatio);
 
     this.currentScene = new Scene(this.container, this.renderer);
-
+    this.updateEnvironment(this.currentScene.vignette);
     this.stats = Stats();
     this.gui = null;
     this.state = {
