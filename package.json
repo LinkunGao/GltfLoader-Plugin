@@ -36,10 +36,11 @@
     "typescript": "^4.6.4"
   },
   "dependencies": {
+    "@types/dat.gui": "^0.7.7",
     "@types/three": "^0.140.0",
+    "dat.gui": "^0.7.9",
     "glsl-blend-soft-light": "^1.0.5",
     "glsl-film-grain": "^1.0.4",
-    "lil-gui": "^0.16.1",
     "three": "^0.140.2"
   }
 }

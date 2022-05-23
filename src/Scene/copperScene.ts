@@ -5,6 +5,10 @@ import { createBackground, customMeshType } from "../lib/three-vignette";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { copperGltfLoader } from "../GlftLoader/copperGltfLoader";
 
+interface stateType {
+  [key: string]: string | number | boolean | {};
+}
+
 const IS_IOS = isIOS();
 
 export default class Scene {
@@ -16,13 +20,14 @@ export default class Scene {
   sceneName: string = "";
   vignette: customMeshType;
   clock: THREE.Clock = new THREE.Clock();
+
+  content: THREE.Group | null;
   private directionalLight: THREE.DirectionalLight;
   private ambientLight: THREE.AmbientLight;
   private mixer: THREE.AnimationMixer | null = null;
-  // private gltfLoader: GLTFLoader = new GLTFLoader();
+
   private copperControl: Controls;
-  private color1: string = "#161515";
-  // private color1: string = "#5454ad";
+  private color1: string = "#5454ad";
   private color2: string = "#18e5a7";
 
   private modelReady: boolean = false;
@@ -37,10 +42,12 @@ export default class Scene {
       500
     );
     this.renderer = renderer;
-    this.ambientLight = new THREE.AmbientLight(0x202020);
-    this.directionalLight = new THREE.DirectionalLight(0x777777);
+    this.ambientLight = new THREE.AmbientLight(0x202020, 1);
+    this.directionalLight = new THREE.DirectionalLight(0x777777, 1);
 
     this.copperControl = new Controls(this.camera);
+
+    this.content = null;
 
     this.vignette = createBackground({
       aspect: this.container.clientWidth / this.container.clientHeight,
@@ -60,19 +67,15 @@ export default class Scene {
     this.camera.position.z = 2;
 
     this.scene.add(this.ambientLight);
-    this.scene.add(this.directionalLight);
+    // this.scene.add(this.directionalLight);
+    this.camera.add(this.directionalLight);
     this.renderer.setSize(
       this.container.clientWidth,
       this.container.clientHeight
     );
     this.container.appendChild(this.renderer.domElement);
-    this.container.addEventListener("resize", this.onWindowResize, false);
-  }
 
-  updateBackground(color1: string, color2: string) {
-    this.vignette.style({
-      colors: [color1, color2],
-    });
+    this.container.addEventListener("resize", this.onWindowResize, false);
   }
 
   loadGltf(url: string) {
@@ -81,10 +84,20 @@ export default class Scene {
     loader.load(
       url,
       (gltf: GLTF) => {
+        const box = new THREE.Box3().setFromObject(gltf.scene);
+        const size = box.getSize(new THREE.Vector3()).length();
+        const center = box.getCenter(new THREE.Vector3());
+
+        this.controls.maxDistance = size * 10;
+        gltf.scene.position.x += gltf.scene.position.x - center.x;
+        gltf.scene.position.y += gltf.scene.position.y - center.y;
+        gltf.scene.position.z += gltf.scene.position.z - center.z;
+
         this.mixer = new THREE.AnimationMixer(gltf.scene);
         gltf.animations.forEach((a: THREE.AnimationClip) => {
           this.mixer && this.mixer.clipAction(a).play();
         });
+        this.content = gltf.scene;
         this.scene.add(gltf.scene);
         this.modelReady = true;
       },
@@ -133,6 +146,17 @@ export default class Scene {
     this.copperControl.updateCameraViewPoint(viewpoint);
   }
 
+  updateDisplay(state: stateType) {
+    traverseMaterials(this.content as THREE.Group, (material) => {
+      material.wireframe = state.wireframe;
+    });
+  }
+  updateBackground(color1: string, color2: string) {
+    this.vignette.style({
+      colors: [color1, color2],
+    });
+  }
+
   createDemoMesh() {
     const geometry = new THREE.BoxGeometry();
     const material = new THREE.MeshPhongMaterial({
@@ -179,4 +203,18 @@ function isIOS() {
     ].includes(navigator.platform) ||
     (navigator.userAgent.includes("Mac") && "ontouchend" in document)
   );
+}
+
+function traverseMaterials(
+  object: THREE.Group,
+  callback: (material: any) => void
+) {
+  object.traverse((node) => {
+    if (!(node as THREE.Mesh).isMesh) return;
+    if (Array.isArray((node as THREE.Mesh).material)) {
+      callback((node as THREE.Mesh).material);
+    } else {
+      [(node as THREE.Mesh).material].forEach(callback);
+    }
+  });
 }
