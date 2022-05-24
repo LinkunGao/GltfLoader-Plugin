@@ -15,7 +15,7 @@ a {
   color: #36a172 !important;
 }
 .navbar-brand-box {
-  background-color: #c64092 !important;
+  background-color: #7189FF !important;
   padding: 10px;
 }
 /* .bd-sidebar__top{
@@ -28,6 +28,7 @@ a {
 }
 #site-navigation h1.site-logo {
   font-size: 0.9em !important;
+  color:#fff;
 }
 
 /* Sidebar header (and topbar for mobile) */

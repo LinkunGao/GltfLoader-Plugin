@@ -80,4 +80,4 @@ Install the library in a visualisation APP (Vue, Vite, React)
     ```
 
   - Results
-    ![results](../_static/images/intro_01.jpg)
+    ![](../_static/images/intro_01.jpg)
