@@ -66,12 +66,15 @@ Install the library in a visualisation APP (Vue, Vite, React)
             let { $refs } = (getCurrentInstance() as any).proxy;
             refs = $refs;
 
+            // get root container
             const bg: HTMLDivElement = refs.base_container;
 
             appRenderer = new Copper.Renderer(bg);
 
-            appRenderer.animate();
+            const defaultScene = appRenderer.getCurrentScene();
+            defaultScene.createDemoMesh();
 
+            appRenderer.animate();
          });
     <script>
     ```

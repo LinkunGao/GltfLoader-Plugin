@@ -1,6 +1,10 @@
-# GltfLoader-Plugin
+# Copper3D visualisation library
 
-## Useage
+Documentation: https://gltfloader-plugin.readthedocs.io/en/latest/
+
+## GltfLoader-Plugin
+
+### Useage
 
 - Load demo
 
@@ -56,7 +60,7 @@ function loadModel(url, name) {
 }
 ```
 
-### Viewdata Structure
+#### Viewdata Structure
 
 ```ts
  CameraViewPoint {
