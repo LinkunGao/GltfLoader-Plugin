@@ -26,7 +26,9 @@ a {
   padding-left: 0 ;
   margin-left: 0;
 }
-
+#site-navigation h1.site-logo {
+  font-size: 0.9em !important;
+}
 
 /* Sidebar header (and topbar for mobile) */
 /* .wy-side-nav-search,

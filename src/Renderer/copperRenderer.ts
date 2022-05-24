@@ -75,6 +75,8 @@ export default class Renderer {
     this.init();
   }
   init() {
+    if (this.currentScene.sceneName === "")
+      this.currentScene.sceneName = "default";
     if (this.options?.guiOpen && !this.gui) {
       this.addGui();
     }
