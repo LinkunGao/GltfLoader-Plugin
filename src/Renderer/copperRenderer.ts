@@ -4,7 +4,7 @@ import { customMeshType } from "../lib/three-vignette";
 import { environments, environmentType } from "../lib/environment/index";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import Stats from "three/examples/jsm/libs/stats.module";
-import { GUI } from "dat.gui";
+import { GUI, GUIController } from "dat.gui";
 
 interface SceneMapType {
   [key: string]: Scene;
@@ -30,6 +30,13 @@ interface stateType {
   [key: string]: string | number | boolean | {};
 }
 
+interface modelVisualisationDataType {
+  name: string;
+  visible: boolean;
+  mesh: THREE.Mesh;
+  // [key: string]: THREE.Mesh;
+}
+
 export default class Renderer {
   container: HTMLDivElement;
   renderer: THREE.WebGLRenderer;
@@ -40,6 +47,11 @@ export default class Renderer {
   private state: stateType;
   private pmremGenerator: THREE.PMREMGenerator;
   private stats: Stats;
+
+  // GUI update folder
+  private visualiseFolder: GUI | null;
+  private visualCtrls: Array<GUIController> = [];
+
   constructor(container: HTMLDivElement, options?: optType) {
     this.container = container;
     this.options = options;
@@ -72,6 +84,7 @@ export default class Renderer {
       bgColor1: "#5454ad",
       bgColor2: "#18e5a7",
     };
+    this.visualiseFolder = null;
     this.init();
   }
   init() {
@@ -126,6 +139,7 @@ export default class Renderer {
   setCurrentScene(sceneIn: Scene) {
     if (sceneIn) {
       this.currentScene = sceneIn;
+      this.updateGui();
       this.onWindowResize();
     }
   }
@@ -153,6 +167,9 @@ export default class Renderer {
     const modelFolder = gui.addFolder("ModelFolder");
     const wireframeCtrl = modelFolder.add(this.state, "wireframe");
     wireframeCtrl.onChange(() => this.currentScene.updateDisplay(this.state));
+
+    // model visualisation
+    this.visualiseFolder = modelFolder.addFolder("ModelVisualisation");
 
     // bg
     const bgColor1Ctrl = modelFolder.addColor(this.state, "bgColor1");
@@ -196,6 +213,55 @@ export default class Renderer {
     ].forEach((ctrl) =>
       ctrl.onChange(() => this.currentScene.updateLights(this.state))
     );
+  }
+
+  private updateGui() {
+    if (this.visualCtrls.length !== 0) {
+      this.visualCtrls.forEach((ctrl) => {
+        this.visualiseFolder?.remove(ctrl);
+      });
+    }
+    this.visualCtrls = [];
+
+    setTimeout(() => {
+      let flag: boolean = true;
+      let modelChildrenArray: Array<modelVisualisationDataType> = [];
+      const modelChildren = this.currentScene.content
+        ?.children as Array<THREE.Mesh>;
+
+      const pushChildren = (child: any) => {
+        if (child.isMesh) {
+          flag = false;
+          const temp: modelVisualisationDataType = {
+            name: child.name || "Untitled",
+            visible: child.visible,
+            mesh: child,
+          };
+          modelChildrenArray.push(temp);
+        }
+      };
+      modelChildren.forEach((child) => {
+        pushChildren(child);
+      });
+
+      if (flag) {
+        modelChildren.forEach((child1) => {
+          child1.children.forEach((child) => {
+            pushChildren(child);
+          });
+        });
+      }
+
+      modelChildrenArray.forEach((item) => {
+        const ctrl = (this.visualiseFolder as GUI)
+          .add(item, "visible")
+          .name(item.name)
+          .onChange(() => {
+            this.currentScene.updateModelChildrenVisualisation(item.mesh);
+          });
+        this.visualCtrls.push(ctrl);
+      });
+    }, 1500);
   }
 
   onWindowResize() {}

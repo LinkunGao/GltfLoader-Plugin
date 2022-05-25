@@ -175,6 +175,10 @@ export default class Scene {
     this.copperControl.updateCameraViewPoint(viewpoint);
   }
 
+  updateModelChildrenVisualisation(child: THREE.Mesh) {
+    child.visible = !child.visible;
+  }
+
   updateLights(state: stateType) {
     const lights = this.lights;
 
