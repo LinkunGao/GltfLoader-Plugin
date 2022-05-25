@@ -11,6 +11,7 @@ Welcome to Copper3D's documentation!
    :caption: Contents:
 
    Intro/index
+   features/index
    api/index
    release/index
 

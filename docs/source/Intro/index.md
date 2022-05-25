@@ -8,7 +8,7 @@ The main purpose of this library is to provide a stable loader function, a high 
 
 **Notice:**
 
-Currently the library is under develop period, the npm pacage name is `temporary`, it will be `change` after.
+Currently the library is under develop period, the npm package name is `temporary`, it will be `change` after.
 
 - `Functions`
   - `Gltfloader plugin`
