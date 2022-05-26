@@ -51,6 +51,7 @@ export default class Renderer {
   // GUI update folder
   private visualiseFolder: GUI | null;
   private visualCtrls: Array<GUIController> = [];
+  private cameraFolder: GUI | null;
 
   constructor(container: HTMLDivElement, options?: optType) {
     this.container = container;
@@ -85,6 +86,7 @@ export default class Renderer {
       bgColor2: "#18e5a7",
     };
     this.visualiseFolder = null;
+    this.cameraFolder = null;
     this.init();
   }
   init() {
@@ -170,7 +172,8 @@ export default class Renderer {
 
     // model visualisation
     this.visualiseFolder = modelFolder.addFolder("ModelVisualisation");
-
+    // camera
+    this.cameraFolder = gui.addFolder("Camera");
     // bg
     const bgColor1Ctrl = modelFolder.addColor(this.state, "bgColor1");
     const bgColor2Ctrl = modelFolder.addColor(this.state, "bgColor2");
@@ -261,6 +264,29 @@ export default class Renderer {
           });
         this.visualCtrls.push(ctrl);
       });
+
+      // camera
+
+      this.cameraFolder?.add(this.currentScene.camera, "near");
+      this.cameraFolder?.add(this.currentScene.camera, "far");
+      const position = this.cameraFolder?.addFolder("position") as GUI;
+      position.add(this.currentScene.camera.position, "x");
+      position.add(this.currentScene.camera.position, "y");
+      position.add(this.currentScene.camera.position, "z");
+      const up = this.cameraFolder?.addFolder("up") as GUI;
+      up.add(this.currentScene.camera.up, "x");
+      up.add(this.currentScene.camera.up, "y");
+      up.add(this.currentScene.camera.up, "z");
+      console.log(this.currentScene.camera);
+
+      // const position = this.cameraFolder?.addFolder("position") as GUI;
+      // position.add(this.currentScene.camera.position, "x");
+      // position.add(this.currentScene.camera.position, "y");
+      // position.add(this.currentScene.camera.position, "z");
+
+      // this.cameraFolder?.add(this.currentScene.camera, "position");
+      // this.cameraFolder?.add(this.currentScene.camera, "target");
+      // this.cameraFolder?.add(this.currentScene.camera, "up");
     }, 1500);
   }
 

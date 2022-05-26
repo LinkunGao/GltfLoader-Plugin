@@ -3,7 +3,7 @@ import Renderer from "./Renderer/copperRenderer";
 import { setHDRFilePath } from "./lib/environment/index";
 
 console.log(
-  "%cMedtech Heart Plugin %cBeta:v1.3.4",
+  "%cMedtech Heart Plugin %cBeta:v1.3.5",
   "padding: 3px;color:white; background:#023047",
   "padding: 3px;color:white; background:#219EBC"
 );
