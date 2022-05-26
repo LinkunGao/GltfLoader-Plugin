@@ -269,6 +269,13 @@ export default class Renderer {
 
       this.cameraFolder?.add(this.currentScene.camera, "near");
       this.cameraFolder?.add(this.currentScene.camera, "far");
+      const subCameraFolders = this.cameraFolder?.__folders;
+      for (let key in subCameraFolders) {
+        if (Object.prototype.hasOwnProperty.call(subCameraFolders, key)) {
+          const sub = subCameraFolders[key];
+          this.cameraFolder?.removeFolder(sub);
+        }
+      }
       const position = this.cameraFolder?.addFolder("position") as GUI;
       position.add(this.currentScene.camera.position, "x");
       position.add(this.currentScene.camera.position, "y");
@@ -277,16 +284,6 @@ export default class Renderer {
       up.add(this.currentScene.camera.up, "x");
       up.add(this.currentScene.camera.up, "y");
       up.add(this.currentScene.camera.up, "z");
-      console.log(this.currentScene.camera);
-
-      // const position = this.cameraFolder?.addFolder("position") as GUI;
-      // position.add(this.currentScene.camera.position, "x");
-      // position.add(this.currentScene.camera.position, "y");
-      // position.add(this.currentScene.camera.position, "z");
-
-      // this.cameraFolder?.add(this.currentScene.camera, "position");
-      // this.cameraFolder?.add(this.currentScene.camera, "target");
-      // this.cameraFolder?.add(this.currentScene.camera, "up");
     }, 1500);
   }
 
