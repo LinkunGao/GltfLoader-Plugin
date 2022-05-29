@@ -9,7 +9,7 @@ function loadModel(url, name) {
   if (scene1 == undefined) {
     const scene = appRenderer.createScene(name);
     const funa = () => {
-      /*DO Anything you want do here*/
+      /*DO Anything what you want do here*/
       document.removeEventListener("click", funa);
     };
     /*give your gltfmodel submesh names which are you not need!*/
@@ -41,5 +41,6 @@ function loadModel(url, name) {
 }
 ```
 
-See example here:
-https://linkungao.github.io/loadHumanModel_example/
+- See example here:
+
+  [Pick model with Gltfloader](https://linkungao.github.io/loadHumanModel_example/)
