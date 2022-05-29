@@ -29,6 +29,14 @@ The result should be `"default"`.
 Demo:
 ![](../_static/images/release_1.3.4_show:hide.gif)
 
-## Release v1.3.5
+## Release v1.4.0
 
 - add camera control in base GUI.
+- pickModel
+  - use raycaster to select model.
+  - it has a callback function and a optional array parameter to sieve out models that users don't want.
+  - see tutorial.
+- add a callback funtion in loadGltf function.
+  - In the callback funtion, you can get your `gltf model`.
+- change class `Renderer` to `copperRenderer`
+- change class `Scene` to `copperScene`

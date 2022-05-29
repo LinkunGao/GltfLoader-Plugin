@@ -17,7 +17,7 @@ onMounted(() => {
   let { $refs } = (getCurrentInstance() as any).proxy;
   refs = $refs;
   const bg: HTMLDivElement = refs.classfy;
-  appRenderer = new Copper.Renderer(bg);
+  appRenderer = new Copper.copperRenderer(bg);
   const scene = appRenderer.getCurrentScene();
   scene.createDemoMesh();
   appRenderer.animate();
@@ -27,7 +27,7 @@ onMounted(() => {
 - Add options (curently only control gui)
 
 ```ts
-appRenderer = new Copper.Renderer(bg, { guiOpen: true });
+appRenderer = new Copper.copperRenderer(bg, { guiOpen: true });
 ```
 
 - Load multiple scenes with gltf-loader
@@ -42,7 +42,7 @@ onMounted(() => {
   let { $refs } = (getCurrentInstance() as any).proxy;
   refs = $refs;
   const bg: HTMLDivElement = refs.classfy;
-  appRenderer = new Copper.Renderer(bg);
+  appRenderer = new Copper.copperRenderer(bg);
   appRenderer.animate();
   loadModel("/Healthy.glb", "health");
 });

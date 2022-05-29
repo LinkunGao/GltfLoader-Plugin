@@ -13,6 +13,7 @@ Welcome to Copper3D's documentation!
    Intro/index
    features/index
    api/index
+   tutorial/index
    release/index
 
 
