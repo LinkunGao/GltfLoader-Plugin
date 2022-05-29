@@ -33,9 +33,14 @@ Demo:
 
 - add camera control in base GUI.
 - pickModel
+
   - use raycaster to select model.
   - it has a callback function and a optional array parameter to sieve out models that users don't want.
-  - see tutorial.
+
+    `callback function:` it will give the select mesh.
+
+  - see `tutorial - pick model`.
+
 - add a callback funtion in loadGltf function.
   - In the callback funtion, you can get your `gltf model`.
 - change class `Renderer` to `copperRenderer`
