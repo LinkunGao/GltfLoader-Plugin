@@ -45,3 +45,7 @@ Demo:
   - In the callback funtion, you can get your `gltf model`.
 - change class `Renderer` to `copperRenderer`
 - change class `Scene` to `copperScene`
+
+## Release v1.4.1
+
+- optimise pickModel function.

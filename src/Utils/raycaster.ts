@@ -35,6 +35,7 @@ export function pickModelDefault(
     // intersects.forEach((a) => {
     //   b[a.object.name] = a.object.name;
     // });
+    // console.log(b);
     if (intersects.length > 0) {
       intersectedObject = intersects[0].object;
     } else {
@@ -54,5 +55,20 @@ export function pickModelDefault(
     });
   };
 
-  document.addEventListener("mousemove", onDocumentMouseMove, false);
+  document.addEventListener(
+    "mousemove",
+    throttle(onDocumentMouseMove, 80),
+    false
+  );
+}
+
+function throttle(callback: (event: MouseEvent) => void, wait: number) {
+  let start: number = 0;
+  return function (event: MouseEvent) {
+    const current: number = Date.now();
+    if (current - start > wait) {
+      callback.call(null, event);
+      start = current;
+    }
+  };
 }
