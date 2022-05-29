@@ -5,5 +5,4 @@ Release Versions
     :maxdepth: 2
     :numbered: 2
 
-    release_1.3.3
-    release_1.3.4
+    release

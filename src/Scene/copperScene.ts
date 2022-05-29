@@ -4,6 +4,7 @@ import { Controls, CameraViewPoint } from "../Controls/copperControls";
 import { createBackground, customMeshType } from "../lib/three-vignette";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { copperGltfLoader } from "../GlftLoader/copperGltfLoader";
+import { pickModelDefault } from "../Utils/raycaster";
 
 interface stateType {
   [key: string]: string | number | boolean | {};
@@ -11,7 +12,7 @@ interface stateType {
 
 const IS_IOS = isIOS();
 
-export default class Scene {
+export default class copperScene {
   container: HTMLDivElement;
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
@@ -32,6 +33,8 @@ export default class Scene {
   private lights: any[] = [];
   private cameraPositionFlag = false;
   private modelReady: boolean = false;
+  // rayster pick
+  private pickableObjects: THREE.Mesh[] = [];
 
   constructor(container: HTMLDivElement, renderer: THREE.WebGLRenderer) {
     this.container = container;
@@ -98,7 +101,7 @@ export default class Scene {
     }
   }
 
-  loadGltf(url: string) {
+  loadGltf(url: string, callback?: (content: THREE.Group) => void) {
     const loader = copperGltfLoader(this.renderer);
 
     loader.load(
@@ -126,12 +129,36 @@ export default class Scene {
           this.mixer && this.mixer.clipAction(a).play();
         });
         this.content = gltf.scene;
+
         this.scene.add(gltf.scene);
         this.modelReady = true;
+        callback && callback(gltf.scene);
       },
       (error) => {
         // console.log(error);
       }
+    );
+  }
+
+  // pickModel
+  pickModel(
+    content: THREE.Group,
+    callback: (selectMesh: THREE.Mesh) => void,
+    options?: string[]
+  ) {
+    content.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const m = child as THREE.Mesh;
+        if (!(options && options.includes(m.name))) {
+          this.pickableObjects.push(m);
+        }
+      }
+    });
+    pickModelDefault(
+      this.camera,
+      this.renderer,
+      this.pickableObjects,
+      callback
     );
   }
 
