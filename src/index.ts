@@ -1,11 +1,11 @@
 // import Scene from "./Scene/index";
-import Renderer from "./Renderer/copperRenderer";
+import copperRenderer from "./Renderer/copperRenderer";
 import { setHDRFilePath } from "./lib/environment/index";
 
 console.log(
-  "%cMedtech Heart Plugin %cBeta:v1.3.5",
+  "%cMedtech Heart Plugin %cBeta:v1.4.0",
   "padding: 3px;color:white; background:#023047",
   "padding: 3px;color:white; background:#219EBC"
 );
 
-export { Renderer, setHDRFilePath };
+export { copperRenderer, setHDRFilePath };

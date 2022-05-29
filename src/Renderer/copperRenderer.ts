@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import Scene from "../Scene/copperScene";
+import copperScene from "../Scene/copperScene";
 import { customMeshType } from "../lib/three-vignette";
 import { environments, environmentType } from "../lib/environment/index";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
@@ -7,7 +7,7 @@ import Stats from "three/examples/jsm/libs/stats.module";
 import { GUI, GUIController } from "dat.gui";
 
 interface SceneMapType {
-  [key: string]: Scene;
+  [key: string]: copperScene;
 }
 interface optType {
   guiOpen: boolean;
@@ -37,11 +37,11 @@ interface modelVisualisationDataType {
   // [key: string]: THREE.Mesh;
 }
 
-export default class Renderer {
+export default class copperRenderer {
   container: HTMLDivElement;
   renderer: THREE.WebGLRenderer;
   gui: GUI | null;
-  private currentScene: Scene;
+  private currentScene: copperScene;
   private sceneMap: SceneMapType = {};
   private options: optType | undefined;
   private state: stateType;
@@ -66,7 +66,7 @@ export default class Renderer {
     this.pmremGenerator.compileEquirectangularShader();
     this.renderer.setPixelRatio(window.devicePixelRatio);
 
-    this.currentScene = new Scene(this.container, this.renderer);
+    this.currentScene = new copperScene(this.container, this.renderer);
     this.updateEnvironment(this.currentScene.vignette);
     this.stats = Stats();
     this.gui = null;
@@ -138,7 +138,7 @@ export default class Renderer {
     return this.currentScene;
   }
 
-  setCurrentScene(sceneIn: Scene) {
+  setCurrentScene(sceneIn: copperScene) {
     if (sceneIn) {
       this.currentScene = sceneIn;
       this.updateGui();
@@ -150,7 +150,7 @@ export default class Renderer {
     if (this.sceneMap[name] != undefined) {
       return undefined;
     } else {
-      const new_scene = new Scene(this.container, this.renderer);
+      const new_scene = new copperScene(this.container, this.renderer);
       new_scene.sceneName = name;
       this.updateEnvironment(new_scene.vignette);
       this.sceneMap[name] = new_scene;
@@ -243,17 +243,23 @@ export default class Renderer {
           modelChildrenArray.push(temp);
         }
       };
-      modelChildren.forEach((child) => {
-        pushChildren(child);
-      });
 
-      if (flag) {
-        modelChildren.forEach((child1) => {
-          child1.children.forEach((child) => {
-            pushChildren(child);
-          });
-        });
-      }
+      this.currentScene.content?.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          pushChildren(child);
+        }
+      });
+      // modelChildren.forEach((child) => {
+      //   pushChildren(child);
+      // });
+
+      // if (flag) {
+      //   modelChildren.forEach((child1) => {
+      //     child1.children.forEach((child) => {
+      //       pushChildren(child);
+      //     });
+      //   });
+      // }
 
       modelChildrenArray.forEach((item) => {
         const ctrl = (this.visualiseFolder as GUI)
