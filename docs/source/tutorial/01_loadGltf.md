@@ -59,7 +59,7 @@ In Vue environment.
   - load your model viewpoint
     Data structure
 
-    ```json
+    ```ts
      {
         nearPlane: number = 0.1; // camera near
         farPlane: number = 2000.0; // camera far
