@@ -49,3 +49,10 @@ Demo:
 ## Release v1.4.1
 
 - optimise pickModel function.
+
+## Release v1.4.2
+
+- modified pickModel callback function.
+
+  if is picked the mesh will be returned.
+  if picked null, the mesh will return undefined.

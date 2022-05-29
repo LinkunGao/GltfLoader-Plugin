@@ -143,7 +143,7 @@ export default class copperScene {
   // pickModel
   pickModel(
     content: THREE.Group,
-    callback: (selectMesh: THREE.Mesh) => void,
+    callback: (selectMesh: THREE.Mesh | undefined) => void,
     options?: string[]
   ) {
     content.traverse((child) => {
