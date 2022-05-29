@@ -17,3 +17,9 @@ Welcome to Copper3D's documentation!
    release/index
 
 
+Examples
+----------
+
+- PickModel with Gltfloader:
+
+   https://linkungao.github.io/loadHumanModel_example/
