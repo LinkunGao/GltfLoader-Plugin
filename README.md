@@ -4,6 +4,10 @@ Documentation: https://gltfloader-plugin.readthedocs.io/en/latest/
 
 ## GltfLoader-Plugin
 
+### example
+
+[Pick model with Gltfloader](https://linkungao.github.io/loadHumanModel_example/)
+
 ### Useage
 
 - Load demo

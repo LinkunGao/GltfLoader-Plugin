@@ -21,7 +21,11 @@ function loadModel(url, name) {
           content,
           (mesh) => {
             /*here I add a click listener, when selected a correct mesh */
-            if (mesh.name === "whole-heart") {
+            /*
+             * if is picked the mesh will be returned.
+             * else the mesh will return undefined.
+             **/
+            if (mesh && mesh.name === "whole-heart") {
               document.addEventListener("click", funa);
             } else {
               document.removeEventListener("click", funa);

@@ -4,7 +4,7 @@ export function pickModelDefault(
   camera: THREE.PerspectiveCamera,
   renderer: THREE.WebGLRenderer,
   pickableObjects: THREE.Mesh[],
-  callback: (selectMesh: THREE.Mesh) => void
+  callback: (selectMesh: THREE.Mesh | undefined) => void
 ) {
   const raycaster = new THREE.Raycaster();
   let intersects: THREE.Intersection[];
@@ -35,16 +35,19 @@ export function pickModelDefault(
     // intersects.forEach((a) => {
     //   b[a.object.name] = a.object.name;
     // });
+    // console.log(b);
     if (intersects.length > 0) {
       intersectedObject = intersects[0].object;
     } else {
       intersectedObject = null;
       oldName = "";
+      callback(undefined);
     }
     pickableObjects.forEach((o: THREE.Mesh, i) => {
       if (intersectedObject && intersectedObject.name === o.name) {
         if (oldName != o.name) {
           oldName = o.name;
+
           callback(pickableObjects[i]);
           pickableObjects[i].material = highlightedMaterial;
         }
@@ -54,5 +57,20 @@ export function pickModelDefault(
     });
   };
 
-  document.addEventListener("mousemove", onDocumentMouseMove, false);
+  document.addEventListener(
+    "mousemove",
+    throttle(onDocumentMouseMove, 80),
+    false
+  );
+}
+
+function throttle(callback: (event: MouseEvent) => void, wait: number) {
+  let start: number = 0;
+  return function (event: MouseEvent) {
+    const current: number = Date.now();
+    if (current - start > wait) {
+      callback.call(null, event);
+      start = current;
+    }
+  };
 }
