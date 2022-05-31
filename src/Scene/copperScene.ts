@@ -206,6 +206,11 @@ export default class copperScene {
     child.visible = !child.visible;
   }
 
+  updateCamera(viewpoint: CameraViewPoint) {
+    this.cameraPositionFlag = true;
+    this.copperControl.updateCameraViewPoint(viewpoint);
+  }
+
   updateLights(state: stateType) {
     const lights = this.lights;
 
@@ -233,6 +238,10 @@ export default class copperScene {
       colors: [color1, color2],
     });
   }
+
+  // updateCamera(viewpoint){
+
+  // }
 
   createDemoMesh() {
     const geometry = new THREE.BoxGeometry();
