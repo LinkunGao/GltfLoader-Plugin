@@ -56,3 +56,10 @@ Demo:
 
   if is picked the mesh will be returned.
   if picked null, the mesh will return undefined.
+
+## Release v1.4.3
+
+- export copperScene type -- `copperScene`
+- export viewpoint type -- `CameraViewPoint`
+- add updateCamera function
+  - same as loadView function

@@ -249,17 +249,6 @@ export default class copperRenderer {
           pushChildren(child);
         }
       });
-      // modelChildren.forEach((child) => {
-      //   pushChildren(child);
-      // });
-
-      // if (flag) {
-      //   modelChildren.forEach((child1) => {
-      //     child1.children.forEach((child) => {
-      //       pushChildren(child);
-      //     });
-      //   });
-      // }
 
       modelChildrenArray.forEach((item) => {
         const ctrl = (this.visualiseFolder as GUI)
