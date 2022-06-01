@@ -21,8 +21,9 @@ export default class copperScene {
   sceneName: string = "";
   vignette: customMeshType;
   clock: THREE.Clock = new THREE.Clock();
-
   content: THREE.Group | null;
+
+  private viewPoint: CameraViewPoint = new CameraViewPoint();
   private directionalLight: THREE.DirectionalLight;
   private ambientLight: THREE.AmbientLight;
   private mixer: THREE.AnimationMixer | null = null;
@@ -122,6 +123,11 @@ export default class copperScene {
           this.camera.position.y += size / 5.0;
           this.camera.position.z += size / 2.0;
           this.camera.lookAt(center);
+          this.viewPoint = this.setViewPoint(this.camera, [
+            center.x,
+            center.y,
+            center.z,
+          ]);
         }
 
         this.mixer = new THREE.AnimationMixer(gltf.scene);
@@ -193,6 +199,7 @@ export default class copperScene {
 
   loadView(viewpointData: CameraViewPoint) {
     this.cameraPositionFlag = true;
+    this.viewPoint = viewpointData;
     const viewpoint = new CameraViewPoint();
     viewpoint.farPlane = viewpointData.farPlane;
     viewpoint.nearPlane = viewpointData.nearPlane;
@@ -200,6 +207,36 @@ export default class copperScene {
     viewpoint.targetPosition = viewpointData.targetPosition;
     viewpoint.upVector = viewpointData.upVector;
     this.copperControl.updateCameraViewPoint(viewpoint);
+  }
+
+  getDefaultViewPoint() {
+    return this.viewPoint;
+  }
+
+  setViewPoint(
+    camera: THREE.PerspectiveCamera,
+    target?: number[]
+  ): CameraViewPoint {
+    const viewPoint = new CameraViewPoint();
+    viewPoint.farPlane = camera.far;
+    viewPoint.nearPlane = camera.near;
+    viewPoint.eyePosition = [
+      camera.position.x,
+      camera.position.y,
+      camera.position.z,
+    ];
+    if (target) {
+      viewPoint.targetPosition = [target[0], target[1], target[2]];
+    } else {
+      viewPoint.targetPosition = [0, 0, 0];
+    }
+    viewPoint.upVector = [camera.up.x, camera.up.y, camera.up.z];
+    return viewPoint;
+  }
+
+  resetView() {
+    this.controls.reset();
+    this.updateCamera(this.viewPoint);
   }
 
   updateModelChildrenVisualisation(child: THREE.Mesh) {
@@ -238,10 +275,6 @@ export default class copperScene {
       colors: [color1, color2],
     });
   }
-
-  // updateCamera(viewpoint){
-
-  // }
 
   createDemoMesh() {
     const geometry = new THREE.BoxGeometry();
