@@ -71,3 +71,9 @@ Demo:
 - getViewPoint()
   - Returns the default viewpoint, i.e. the viewpoint that was available when the user loaded the model.
 - resetView()
+
+## Release v1.4.5
+
+- add `isHalfed` attribute in copperScene
+  - the default value is `false`
+  - when user call scene.updateModelChildrenVisualisation(), the value will changed.

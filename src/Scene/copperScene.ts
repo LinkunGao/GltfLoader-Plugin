@@ -22,6 +22,7 @@ export default class copperScene {
   vignette: customMeshType;
   clock: THREE.Clock = new THREE.Clock();
   content: THREE.Group | null;
+  isHalfed: boolean = false;
 
   private viewPoint: CameraViewPoint = new CameraViewPoint();
   private directionalLight: THREE.DirectionalLight;
@@ -241,6 +242,11 @@ export default class copperScene {
 
   updateModelChildrenVisualisation(child: THREE.Mesh) {
     child.visible = !child.visible;
+    let flags: Array<boolean> = [];
+    this.content?.traverse((mesh) => {
+      flags.push(mesh.visible);
+    });
+    flags.includes(false) ? (this.isHalfed = true) : (this.isHalfed = false);
   }
 
   updateCamera(viewpoint: CameraViewPoint) {
