@@ -63,3 +63,11 @@ Demo:
 - export viewpoint type -- `CameraViewPoint`
 - add updateCamera function
   - same as loadView function
+
+## Release v1.4.4
+
+- setViewPoint(camera: THREE.PerspectiveCamera,target?: number[])
+  - return viewPoint
+- getViewPoint()
+  - Returns the default viewpoint, i.e. the viewpoint that was available when the user loaded the model.
+- resetView()

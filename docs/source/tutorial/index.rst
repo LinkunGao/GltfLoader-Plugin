@@ -8,3 +8,4 @@ Tutorial
     01_loadGltf
     02_pickModel
     03_shareView
+    04_resetView
