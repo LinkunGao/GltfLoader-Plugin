@@ -9,3 +9,5 @@ Tutorial
     02_pickModel
     03_shareView
     04_resetView
+    05_convertPos
+    06_addLabel

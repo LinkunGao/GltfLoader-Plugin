@@ -77,3 +77,58 @@ Demo:
 - add `isHalfed` attribute in copperScene
   - the default value is `false`
   - when user call scene.updateModelChildrenVisualisation(), the value will changed.
+
+## Release v1.5.0
+
+- setPlayRate(playRate:number)
+- getPlayRate()
+  - retrun current play rate
+- addLabelToScene(scene, text, x, y, z, scaling)
+
+  - scene: copperScene
+  - text: string
+  - x,y,z: tag position
+  - scaling: scale
+
+- convert3DPostoScreenPos(container: HTMLDivElement | HTMLCanvasElement,
+  camera: THREE.PerspectiveCamera,
+  mesh: THREE.Object3D | THREE.Mesh | THREE.Sprite)
+
+  - Give a 3D object, it will return a screen postion for you.
+
+- convertScreenPosto3DPos(container: HTMLDivElement | HTMLCanvasElement,
+  camera: THREE.PerspectiveCamera,
+  pos: screenPosType)
+
+  - Give the screen position, it will return a threejs 3d position for you.
+  - you can customise z position.
+
+- export two position type
+  - positionType
+    ```ts
+    positionType {
+      x: number;
+      y: number;
+      z: number;
+    }
+    ```
+  - screenPosType
+    ```ts
+    screenPosType {
+      x: number;
+      y: number;
+    }
+    ```
+- Add nrrdloader
+  - loadNrrd(url: string, callback?: (volume: any) => void, opts?: optsType)
+    `optsType`:
+    ```ts
+    interface optsType {
+      openGui: boolean;
+      container?: HTMLDivElement;
+    }
+    ```
+  - addBoxHelper(scene: copperScene,volume: any,boxCube?: THREE.Object3D<THREE.Event>)
+    This function can work with loadNrrd function
+
+More information see `tutorial 07`
