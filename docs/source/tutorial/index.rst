@@ -11,3 +11,4 @@ Tutorial
     04_resetView
     05_convertPos
     06_addLabel
+    07_loadNrrd

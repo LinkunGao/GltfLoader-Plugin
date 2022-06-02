@@ -132,3 +132,7 @@ Demo:
     This function can work with loadNrrd function
 
 More information see `tutorial 07`
+
+## Release v1.5.1
+
+- fix bug default gui error.
