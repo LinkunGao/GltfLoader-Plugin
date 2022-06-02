@@ -2,9 +2,10 @@ import * as THREE from "three";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls";
 import { Controls, CameraViewPoint } from "../Controls/copperControls";
 import { createBackground, customMeshType } from "../lib/three-vignette";
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { copperGltfLoader } from "../GlftLoader/copperGltfLoader";
+import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
+import { copperGltfLoader } from "../Loader/copperGltfLoader";
 import { pickModelDefault } from "../Utils/raycaster";
+import { copperNrrdLoader, optsType } from "../Loader/copperNrrdLoader";
 
 interface stateType {
   [key: string]: string | number | boolean | {};
@@ -28,6 +29,7 @@ export default class copperScene {
   private directionalLight: THREE.DirectionalLight;
   private ambientLight: THREE.AmbientLight;
   private mixer: THREE.AnimationMixer | null = null;
+  private playRate: number = 1.0;
 
   private copperControl: Controls;
   private color1: string = "#5454ad";
@@ -147,6 +149,10 @@ export default class copperScene {
     );
   }
 
+  loadNrrd(url: string, callback?: (volume: any) => void, opts?: optsType) {
+    copperNrrdLoader(url, this.scene, callback, opts);
+  }
+
   // pickModel
   pickModel(
     content: THREE.Group,
@@ -210,8 +216,20 @@ export default class copperScene {
     this.copperControl.updateCameraViewPoint(viewpoint);
   }
 
+  addObject(obj: any) {
+    this.scene.add(obj);
+  }
+
   getDefaultViewPoint() {
     return this.viewPoint;
+  }
+
+  getPlayRate() {
+    return this.playRate;
+  }
+
+  setPlayRate(playRate: number) {
+    this.playRate = playRate;
   }
 
   setViewPoint(
@@ -309,7 +327,9 @@ export default class copperScene {
     this.onWindowResize();
     this.controls.update();
     if (this.modelReady) {
-      this.mixer && this.mixer.update(this.clock.getDelta());
+      // console.log(this.clock.getDelta() * 2500);
+      // this.mixer?.clipAction().setDuration;
+      this.mixer && this.mixer.update(this.clock.getDelta() * this.playRate);
     }
     // this.copperControl.updateDirectionalLight(this.directionalLight);
     this.renderer.render(this.scene, this.camera);
