@@ -31,7 +31,6 @@ export default class copperScene {
   private ambientLight: THREE.AmbientLight;
   private mixer: THREE.AnimationMixer | null = null;
   private playRate: number = 1.0;
-  private currentTime: number = 0;
 
   private copperControl: Controls;
   private color1: string = "#5454ad";
@@ -39,6 +38,7 @@ export default class copperScene {
   private lights: any[] = [];
   private cameraPositionFlag = false;
   private modelReady: boolean = false;
+  private clipAction: any;
   // rayster pick
   private pickableObjects: THREE.Mesh[] = [];
 
@@ -136,8 +136,9 @@ export default class copperScene {
         }
 
         this.mixer = new THREE.AnimationMixer(gltf.scene);
-        gltf.animations.forEach((a: THREE.AnimationClip) => {
-          this.mixer && this.mixer.clipAction(a).play();
+        gltf.animations.forEach((a: THREE.AnimationClip, index: number) => {
+          if (index === 0) this.clipAction = this.mixer?.clipAction(a).play();
+          else this.mixer?.clipAction(a).play();
         });
         this.content = gltf.scene;
 
@@ -319,7 +320,17 @@ export default class copperScene {
   }
 
   getCurrentTime() {
-    return this.currentTime;
+    let currentTime = 0;
+    // console.log(this.clipAction.time);
+    if (this.clipAction) {
+      currentTime = this.clipAction.time / this.clipAction._clip.duration;
+    }
+    // console.log(this.clipAction._clip.duration);
+    return currentTime;
+  }
+
+  getCurrentMixer() {
+    return this.mixer;
   }
 
   onWindowResize() {
@@ -337,12 +348,8 @@ export default class copperScene {
     this.onWindowResize();
     this.controls.update();
     if (this.modelReady) {
-      // console.log(this.clock.getDelta() * 2500);
-      // this.mixer?.clipAction().setDuration;
-      this.currentTime = this.clock.getDelta() * this.playRate;
-      this.mixer && this.mixer.update(this.currentTime);
+      this.mixer && this.mixer.update(this.clock.getDelta() * this.playRate);
     }
-    // this.copperControl.updateDirectionalLight(this.directionalLight);
     this.renderer.render(this.scene, this.camera);
   }
 }
