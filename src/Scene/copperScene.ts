@@ -6,6 +6,7 @@ import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import { copperGltfLoader } from "../Loader/copperGltfLoader";
 import { pickModelDefault } from "../Utils/raycaster";
 import { copperNrrdLoader, optsType } from "../Loader/copperNrrdLoader";
+import { copperVtkLoader } from "../Loader/copperVtkLoader";
 
 interface stateType {
   [key: string]: string | number | boolean | {};
@@ -30,6 +31,7 @@ export default class copperScene {
   private ambientLight: THREE.AmbientLight;
   private mixer: THREE.AnimationMixer | null = null;
   private playRate: number = 1.0;
+  private currentTime: number = 0;
 
   private copperControl: Controls;
   private color1: string = "#5454ad";
@@ -151,6 +153,10 @@ export default class copperScene {
 
   loadNrrd(url: string, callback?: (volume: any) => void, opts?: optsType) {
     copperNrrdLoader(url, this.scene, callback, opts);
+  }
+
+  loadVtk(url: string) {
+    copperVtkLoader(url, this.scene);
   }
 
   // pickModel
@@ -312,6 +318,10 @@ export default class copperScene {
     this.scene.add(new THREE.AxesHelper(5));
   }
 
+  getCurrentTime() {
+    return this.currentTime;
+  }
+
   onWindowResize() {
     this.camera.aspect =
       this.container.clientWidth / this.container.clientHeight;
@@ -329,7 +339,8 @@ export default class copperScene {
     if (this.modelReady) {
       // console.log(this.clock.getDelta() * 2500);
       // this.mixer?.clipAction().setDuration;
-      this.mixer && this.mixer.update(this.clock.getDelta() * this.playRate);
+      this.currentTime = this.clock.getDelta() * this.playRate;
+      this.mixer && this.mixer.update(this.currentTime);
     }
     // this.copperControl.updateDirectionalLight(this.directionalLight);
     this.renderer.render(this.scene, this.camera);
