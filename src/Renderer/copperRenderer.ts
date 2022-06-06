@@ -37,6 +37,11 @@ interface modelVisualisationDataType {
   // [key: string]: THREE.Mesh;
 }
 
+interface preRenderCallbackFunctionType {
+  id: number;
+  callback: Function;
+}
+
 export default class copperRenderer {
   container: HTMLDivElement;
   renderer: THREE.WebGLRenderer;
@@ -52,6 +57,8 @@ export default class copperRenderer {
   private visualiseFolder: GUI | null;
   private visualCtrls: Array<GUIController> = [];
   private cameraFolder: GUI | null;
+
+  private preRenderCallbackFunctions: Array<preRenderCallbackFunctionType> = [];
 
   constructor(container: HTMLDivElement, options?: optType) {
     this.container = container;
@@ -262,24 +269,46 @@ export default class copperRenderer {
 
       // camera
 
-      this.cameraFolder?.add(this.currentScene.camera, "near");
-      this.cameraFolder?.add(this.currentScene.camera, "far");
-      const subCameraFolders = this.cameraFolder?.__folders;
-      for (let key in subCameraFolders) {
-        if (Object.prototype.hasOwnProperty.call(subCameraFolders, key)) {
-          const sub = subCameraFolders[key];
-          this.cameraFolder?.removeFolder(sub);
+      if (this.cameraFolder) {
+        if (this.cameraFolder.__controllers.length > 0) {
+          const controllers: GUIController[] = [];
+          this.cameraFolder.__controllers.forEach((c) => {
+            controllers.push(c);
+          });
+          controllers.forEach((c) => {
+            this.cameraFolder?.remove(c);
+          });
         }
+
+        this.cameraFolder?.add(this.currentScene.camera, "near");
+        this.cameraFolder?.add(this.currentScene.camera, "far");
+        const subCameraFolders = this.cameraFolder?.__folders;
+        for (let key in subCameraFolders) {
+          if (Object.prototype.hasOwnProperty.call(subCameraFolders, key)) {
+            const sub = subCameraFolders[key];
+            this.cameraFolder?.removeFolder(sub);
+          }
+        }
+        const position = this.cameraFolder?.addFolder("position") as GUI;
+        position.add(this.currentScene.camera.position, "x");
+        position.add(this.currentScene.camera.position, "y");
+        position.add(this.currentScene.camera.position, "z");
+        const up = this.cameraFolder?.addFolder("up") as GUI;
+        up.add(this.currentScene.camera.up, "x");
+        up.add(this.currentScene.camera.up, "y");
+        up.add(this.currentScene.camera.up, "z");
       }
-      const position = this.cameraFolder?.addFolder("position") as GUI;
-      position.add(this.currentScene.camera.position, "x");
-      position.add(this.currentScene.camera.position, "y");
-      position.add(this.currentScene.camera.position, "z");
-      const up = this.cameraFolder?.addFolder("up") as GUI;
-      up.add(this.currentScene.camera.up, "x");
-      up.add(this.currentScene.camera.up, "y");
-      up.add(this.currentScene.camera.up, "z");
     }, 1500);
+  }
+
+  addPreRenderCallbackFunction(callbackFunction: Function) {
+    const id = this.preRenderCallbackFunctions.length + 1;
+    const preCallback: preRenderCallbackFunctionType = {
+      id,
+      callback: callbackFunction,
+    };
+    this.preRenderCallbackFunctions.push(preCallback);
+    return id;
   }
 
   onWindowResize() {}
@@ -290,5 +319,8 @@ export default class copperRenderer {
   };
   render() {
     this.currentScene.render();
+    this.preRenderCallbackFunctions.forEach((item) => {
+      item.callback.call(null);
+    });
   }
 }
