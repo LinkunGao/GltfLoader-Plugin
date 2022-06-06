@@ -13,7 +13,7 @@ import {
 import { addBoxHelper, optsType } from "./Loader/copperNrrdLoader";
 
 console.log(
-  "%cMedtech Heart Plugin %cBeta:v1.5.1",
+  "%cMedtech Heart Plugin %cBeta:v1.5.2",
   "padding: 3px;color:white; background:#023047",
   "padding: 3px;color:white; background:#219EBC"
 );
