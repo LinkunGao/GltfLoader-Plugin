@@ -71,7 +71,7 @@ export default class copperRenderer {
     // this.renderer.setClearColor(0xffffff, 1);
     this.pmremGenerator = new THREE.PMREMGenerator(this.renderer);
     this.pmremGenerator.compileEquirectangularShader();
-    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     this.currentScene = new copperScene(this.container, this.renderer);
     this.updateEnvironment(this.currentScene.vignette);

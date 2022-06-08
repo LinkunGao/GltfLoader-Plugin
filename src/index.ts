@@ -11,9 +11,10 @@ import {
   convertScreenPosto3DPos,
 } from "./Utils/add3DLabel";
 import { addBoxHelper, optsType } from "./Loader/copperNrrdLoader";
+import { fullScreenListenner } from "./Utils/utils";
 
 console.log(
-  "%cMedtech Heart Plugin %cBeta:v1.5.2",
+  "%cMedtech Heart Plugin %cBeta:v1.5.3",
   "padding: 3px;color:white; background:#023047",
   "padding: 3px;color:white; background:#219EBC"
 );
@@ -25,6 +26,7 @@ export {
   convert3DPostoScreenPos,
   convertScreenPosto3DPos,
   addBoxHelper,
+  fullScreenListenner,
   copperScene,
   CameraViewPoint,
 };

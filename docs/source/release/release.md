@@ -137,3 +137,16 @@ More information see `tutorial 07`
 
 - fix bug default gui error.
 - add preRenderCallback function.
+
+## Release v1.5.3
+
+- Optimize render PixelRatio
+- add a fullscreen method
+  - fullScreenListenner(bg: HtmlDivElement)
+  ```ts
+  document.addEventListener("keydown", (e) => {
+    if (e.code === "KeyF") {
+      appRenderer.fullScreenListenner(bg);
+    }
+  });
+  ```
