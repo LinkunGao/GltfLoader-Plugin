@@ -334,6 +334,7 @@ export default class copperScene {
   }
 
   onWindowResize() {
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.camera.aspect =
       this.container.clientWidth / this.container.clientHeight;
     this.camera.updateProjectionMatrix();
@@ -347,6 +348,7 @@ export default class copperScene {
   render() {
     this.onWindowResize();
     this.controls.update();
+
     if (this.modelReady) {
       this.mixer && this.mixer.update(this.clock.getDelta() * this.playRate);
     }
