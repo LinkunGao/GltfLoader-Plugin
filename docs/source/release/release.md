@@ -150,3 +150,7 @@ More information see `tutorial 07`
     }
   });
   ```
+
+## Release v1.6.0
+
+will make a big change.....
