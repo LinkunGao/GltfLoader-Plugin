@@ -153,4 +153,18 @@ More information see `tutorial 07`
 
 ## Release v1.6.0
 
-will make a big change.....
+- update default gui options
+  ```js
+  appRenderer = new Copper.copperRendererOnDemond(bg, {
+    guiOpen: true,
+    camera: true,
+    performance: true,
+    light: true,
+  });
+  ```
+- Optimize resize render performance
+- add copperRenderOnDemond class
+- add copperSceneOnDemond class
+  - Minimal memory consumption for on-demand rendering
+
+See tutorial 08

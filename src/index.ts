@@ -12,15 +12,18 @@ import {
 } from "./Utils/add3DLabel";
 import { addBoxHelper, optsType } from "./Loader/copperNrrdLoader";
 import { fullScreenListenner } from "./Utils/utils";
+import copperRendererOnDemond from "./Renderer/copperRendererOnDemond";
+import copperSceneOnDemond from "./Scene/copperSceneOnDemond";
 
 console.log(
-  "%cMedtech Heart Plugin %cBeta:v1.5.3",
+  "%cMedtech Heart Plugin %cBeta:v1.6.0",
   "padding: 3px;color:white; background:#023047",
   "padding: 3px;color:white; background:#219EBC"
 );
 
 export {
   copperRenderer,
+  copperRendererOnDemond,
   setHDRFilePath,
   addLabelToScene,
   convert3DPostoScreenPos,
@@ -28,6 +31,7 @@ export {
   addBoxHelper,
   fullScreenListenner,
   copperScene,
+  copperSceneOnDemond,
   CameraViewPoint,
 };
 
