@@ -47,9 +47,8 @@ export function pickModelDefault(
       if (intersectedObject && intersectedObject.name === o.name) {
         if (oldName != o.name) {
           oldName = o.name;
-
-          callback(pickableObjects[i]);
           pickableObjects[i].material = highlightedMaterial;
+          callback(pickableObjects[i]);
         }
       } else {
         pickableObjects[i].material = originalMaterials[o.name];

@@ -12,3 +12,4 @@ Tutorial
     05_convertPos
     06_addLabel
     07_loadNrrd
+    08_renderOnDemond
