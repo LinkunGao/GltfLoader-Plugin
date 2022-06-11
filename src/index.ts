@@ -1,4 +1,3 @@
-// import Scene from "./Scene/index";
 import copperRenderer from "./Renderer/copperRenderer";
 import { setHDRFilePath } from "./lib/environment/index";
 import copperScene from "./Scene/copperScene";
