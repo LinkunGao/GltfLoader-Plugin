@@ -3,6 +3,7 @@ import { Controls, CameraViewPoint } from "../Controls/copperControls";
 import { createBackground, customMeshType } from "../lib/three-vignette";
 import { baseStateType } from "../types/types";
 import { pickModelDefault } from "../Utils/raycaster";
+import { isIOS, traverseMaterials } from "../Utils/utils";
 
 const IS_IOS = isIOS();
 
@@ -42,7 +43,8 @@ export default class baseScene {
       grainScale: IS_IOS ? 0 : 0.001,
       colors: [this.color1, this.color2],
     });
-    (this.vignette.name = "Vignette"), (this.vignette.renderOrder = -1);
+    this.vignette.name = "Vignette";
+    this.vignette.renderOrder = -1;
 
     this.copperControl = new Controls(this.camera);
     this.init();
@@ -144,8 +146,6 @@ export default class baseScene {
     const hemiLight = new THREE.HemisphereLight();
     hemiLight.name = "hemi_light";
     this.scene.add(hemiLight);
-    // this.scene.add(this.ambientLight);
-    // this.scene.add(this.directionalLight);
     this.ambientLight.name = "ambient_light";
     this.directionalLight.name = "main_light";
     this.directionalLight.position.set(0.5, 0, 0.866);
@@ -212,32 +212,4 @@ export default class baseScene {
     // this.onWindowResize();
     this.renderer.render(this.scene, this.camera);
   }
-}
-
-function isIOS() {
-  return (
-    [
-      "iPad Simulator",
-      "iPhone Simulator",
-      "iPod Simulator",
-      "iPad",
-      "iPhone",
-      "iPod",
-    ].includes(navigator.platform) ||
-    (navigator.userAgent.includes("Mac") && "ontouchend" in document)
-  );
-}
-
-function traverseMaterials(
-  object: THREE.Group,
-  callback: (material: any) => void
-) {
-  object.traverse((node) => {
-    if (!(node as THREE.Mesh).isMesh) return;
-    if (Array.isArray((node as THREE.Mesh).material)) {
-      callback((node as THREE.Mesh).material);
-    } else {
-      [(node as THREE.Mesh).material].forEach(callback);
-    }
-  });
 }

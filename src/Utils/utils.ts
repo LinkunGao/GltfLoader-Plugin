@@ -17,3 +17,31 @@ export function fullScreenListenner(
     }
   }
 }
+
+export function isIOS() {
+  return (
+    [
+      "iPad Simulator",
+      "iPhone Simulator",
+      "iPod Simulator",
+      "iPad",
+      "iPhone",
+      "iPod",
+    ].includes(navigator.platform) ||
+    (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+  );
+}
+
+export function traverseMaterials(
+  object: THREE.Group,
+  callback: (material: any) => void
+) {
+  object.traverse((node) => {
+    if (!(node as THREE.Mesh).isMesh) return;
+    if (Array.isArray((node as THREE.Mesh).material)) {
+      callback((node as THREE.Mesh).material);
+    } else {
+      [(node as THREE.Mesh).material].forEach(callback);
+    }
+  });
+}

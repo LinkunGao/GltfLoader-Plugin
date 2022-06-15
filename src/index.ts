@@ -1,3 +1,4 @@
+// import Scene from "./Scene/index";
 import copperRenderer from "./Renderer/copperRenderer";
 import { setHDRFilePath } from "./lib/environment/index";
 import copperScene from "./Scene/copperScene";
@@ -13,9 +14,13 @@ import { addBoxHelper, optsType } from "./Loader/copperNrrdLoader";
 import { fullScreenListenner } from "./Utils/utils";
 import copperRendererOnDemond from "./Renderer/copperRendererOnDemond";
 import copperSceneOnDemond from "./Scene/copperSceneOnDemond";
+import copperMSceneRenderer from "./Renderer/copperMSceneRenderer";
+
+import copperMScene from "./Scene/copperMScene";
+import "./css/style.css";
 
 console.log(
-  "%cMedtech Heart Plugin %cBeta:v1.6.0",
+  "%cMedtech Heart Plugin %cBeta:v1.7.0",
   "padding: 3px;color:white; background:#023047",
   "padding: 3px;color:white; background:#219EBC"
 );
@@ -23,6 +28,7 @@ console.log(
 export {
   copperRenderer,
   copperRendererOnDemond,
+  copperMSceneRenderer,
   setHDRFilePath,
   addLabelToScene,
   convert3DPostoScreenPos,
@@ -31,6 +37,7 @@ export {
   fullScreenListenner,
   copperScene,
   copperSceneOnDemond,
+  copperMScene,
   CameraViewPoint,
 };
 

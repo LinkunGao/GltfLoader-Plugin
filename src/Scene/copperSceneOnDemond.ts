@@ -73,7 +73,7 @@ export default class copperSceneOnDemond extends baseScene {
     });
     pickModelDefault(
       this.camera,
-      this.renderer,
+      this.container,
       this.pickableObjects,
       callback
     );

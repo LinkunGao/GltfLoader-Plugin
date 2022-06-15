@@ -128,7 +128,7 @@ Demo:
       container?: HTMLDivElement;
     }
     ```
-  - addBoxHelper(scene: copperScene,volume: any,boxCube?: THREE.Object3D<THREE.Event>)
+  - addBoxHelper(scene: copperScene,volume: any, boxCube?:THREE.Object3D)
     This function can work with loadNrrd function
 
 More information see `tutorial 07`
@@ -168,3 +168,17 @@ More information see `tutorial 07`
   - Minimal memory consumption for on-demand rendering
 
 See tutorial 08
+
+## Release v1.7.0
+
+- Add multiple scenes function.
+
+  - users can setup mutiple scene in a single page with only one WebGLRenderer and canvas.
+
+  - Useage:
+
+  ```ts
+  appRenderer = new Copper.copperMSceneRenderer(bg, 3);
+  ```
+
+See tutorial 09

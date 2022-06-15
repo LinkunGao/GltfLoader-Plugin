@@ -1,4 +1,4 @@
-# ResetView toturial
+# 04 ResetView toturial
 
 - To use this function, you should make sure each model has same `default` viewpoint.
 

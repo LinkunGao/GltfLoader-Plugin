@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 export function pickModelDefault(
   camera: THREE.PerspectiveCamera,
-  renderer: THREE.WebGLRenderer,
+  container: HTMLDivElement,
   pickableObjects: THREE.Mesh[],
   callback: (selectMesh: THREE.Mesh | undefined) => void
 ) {
@@ -23,10 +23,11 @@ export function pickModelDefault(
   });
 
   const onDocumentMouseMove = (event: MouseEvent) => {
+    const mouseMovePosition = new THREE.Vector2(event.offsetX, event.offsetY);
     raycaster.setFromCamera(
       {
-        x: (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
-        y: -(event.clientY / renderer.domElement.clientHeight) * 2 + 1,
+        x: (mouseMovePosition.x / container.clientWidth) * 2 - 1,
+        y: -(mouseMovePosition.y / container.clientHeight) * 2 + 1,
       },
       camera
     );
@@ -56,7 +57,7 @@ export function pickModelDefault(
     });
   };
 
-  document.addEventListener(
+  container.addEventListener(
     "mousemove",
     throttle(onDocumentMouseMove, 80),
     false

@@ -1,4 +1,4 @@
-# PickModel function
+# 02 PickModel function
 
 This method is related to loadGltf().
 If you are not familar with loadGltf, please look at its tutorial first.

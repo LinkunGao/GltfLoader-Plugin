@@ -1,4 +1,4 @@
-# Add label to scene
+# 06 Add label to scene
 
 - setup html
 

@@ -49,8 +49,7 @@ export function copperNrrdLoader(
     );
     // sliceY.geometry.parameters.width = 300;
     // sliceY.geometry.boundingSphere.radius = 194.94330668752295;
-    console.log(sliceX);
-    console.log(sliceY);
+
     scene.add(sliceZ.mesh);
     scene.add(sliceY.mesh);
     scene.add(sliceX.mesh);
