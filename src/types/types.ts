@@ -1,8 +1,9 @@
 import copperScene from "../Scene/copperScene";
 import baseScene from "../Scene/baseScene";
+import copperMScene from "../Scene/copperMScene";
 
 interface SceneMapType {
-  [key: string]: copperScene | baseScene;
+  [key: string]: copperScene | baseScene | copperMScene;
 }
 interface optType {
   guiOpen: boolean;

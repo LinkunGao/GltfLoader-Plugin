@@ -3,6 +3,7 @@ import resolve from "rollup-plugin-node-resolve"; // 依赖引用插件
 import commonjs from "rollup-plugin-commonjs"; // commonjs模块转换插件
 import glslify from "rollup-plugin-glslify";
 import ts from "rollup-plugin-typescript2";
+import postcss from "rollup-plugin-postcss";
 const getPath = (_path) => path.resolve(__dirname, _path);
 import packageJSON from "./package.json";
 
@@ -24,6 +25,7 @@ const commonConf = {
     }),
     glslify(),
     commonjs(),
+    postcss({ extract: "css/style.css" }),
     tsPlugin,
   ],
 };

@@ -13,3 +13,4 @@ Tutorial
     06_addLabel
     07_loadNrrd
     08_renderOnDemond
+    09_multipleScene

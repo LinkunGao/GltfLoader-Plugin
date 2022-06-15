@@ -44,6 +44,14 @@ export default class copperScene extends baseScene {
         gltf.scene.position.y += gltf.scene.position.y - center.y;
         gltf.scene.position.z += gltf.scene.position.z - center.z;
 
+        // gltf.scene.traverse((child) => {
+        //   if ((child as THREE.Mesh).isMesh) {
+        //     const a = (child as THREE.Mesh)
+        //       .material as THREE.MeshStandardMaterial;
+        //     a.flatShading = false;
+        //   }
+        // });
+
         if (!this.cameraPositionFlag) {
           this.camera.position.copy(center);
           this.camera.position.x += size / 2.0;
@@ -98,7 +106,7 @@ export default class copperScene extends baseScene {
     });
     pickModelDefault(
       this.camera,
-      this.renderer,
+      this.container,
       this.pickableObjects,
       callback
     );
