@@ -44,23 +44,40 @@ export default class copperMScene {
     );
     this.ambientLight = new THREE.AmbientLight(0x202020, 1);
     this.directionalLight = new THREE.DirectionalLight(0xffffff, 2.5);
+
     this.vignette = createBackground({
       aspect: this.container.clientWidth / this.container.clientHeight,
-      grainScale: IS_IOS ? 0 : 0.001,
+      // grainScale: IS_IOS ? 0 : 0.001,
+      grainScale: 0,
       colors: [this.color1, this.color2],
     });
-    this.vignette.name = "Vignette";
-    this.vignette.renderOrder = -1;
+    this.vignette.mesh.name = "Vignette";
+    this.vignette.mesh.renderOrder = -1;
 
     this.copperControl = new Controls(this.camera);
-    this.controls = new TrackballControls(this.camera, container);
     this.init();
+    this.controls = new TrackballControls(this.camera, container);
   }
   init() {
     this.copperControl.setCameraViewPoint();
+    this.camera.position.z = 2;
     this.container.appendChild(this.gui.domElement);
+    this.addLights();
   }
+  createDemoMesh() {
+    const geometry = new THREE.BoxGeometry();
+    const material = new THREE.MeshPhongMaterial({
+      color: 0xff00ff,
+      wireframe: true,
+    });
 
+    const cube = new THREE.Mesh(geometry, material);
+    this.scene.add(cube);
+    this.scene.add(new THREE.AxesHelper(5));
+  }
+  addObject(obj: any) {
+    this.scene.add(obj);
+  }
   loadGltf(url: string, callback?: (content: THREE.Group) => void) {
     const loader = copperGltfLoader(this.renderer);
 
@@ -75,14 +92,6 @@ export default class copperMScene {
         gltf.scene.position.x += gltf.scene.position.x - center.x;
         gltf.scene.position.y += gltf.scene.position.y - center.y;
         gltf.scene.position.z += gltf.scene.position.z - center.z;
-
-        // gltf.scene.traverse((child) => {
-        //   if ((child as THREE.Mesh).isMesh) {
-        //     const a = (child as THREE.Mesh)
-        //       .material as THREE.MeshStandardMaterial;
-        //     a.flatShading = false;
-        //   }
-        // });
 
         if (!this.cameraPositionFlag) {
           this.camera.position.copy(center);
@@ -156,14 +165,20 @@ export default class copperMScene {
     return viewPoint;
   }
 
-  loadNrrd(url: string, callback?: (volume: any) => void, opts?: optsType) {
+  loadNrrd(
+    url: string,
+    callback?: (volume: any, gui?: GUI) => void,
+    opts?: optsType
+  ) {
     copperNrrdLoader(url, this.scene, callback, opts);
   }
+
   updateBackground(color1: string, color2: string) {
     this.vignette.style({
       colors: [color1, color2],
     });
   }
+
   addLights() {
     const hemiLight = new THREE.HemisphereLight();
     hemiLight.name = "hemi_light";
@@ -209,7 +224,7 @@ export default class copperMScene {
   }
 
   render() {
-    // this.controls.update();
+    this.controls.update();
 
     // if (this.modelReady) {
     //   this.mixer && this.mixer.update(this.clock.getDelta() * this.playRate);

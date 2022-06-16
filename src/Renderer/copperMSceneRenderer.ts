@@ -65,19 +65,18 @@ export default class copperMSceneRenderer {
       this.elems.push(elem);
 
       const newScene: copperMScene = new copperMScene(elem, this.renderer);
-
-      this.updateEnvironment(newScene, newScene.vignette);
+      this.updateEnvironment(newScene);
       this.sceneInfos.push(newScene);
     }
   }
 
-  updateEnvironment(sceneIn: copperMScene, vignette?: customMeshType) {
+  updateEnvironment(sceneIn: copperMScene) {
     const environment = environments.filter(
       (entry) => entry.name === "Venice Sunset"
     )[0];
     this.getCubeMapTexture(environment).then((envMap) => {
       if (envMap) {
-        vignette && sceneIn.scene.add(vignette.mesh);
+        sceneIn.vignette && sceneIn.scene.add(sceneIn.vignette.mesh);
       }
       sceneIn.scene.environment = envMap as THREE.Texture;
       sceneIn.scene.background = envMap as THREE.Texture;

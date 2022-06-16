@@ -43,8 +43,10 @@ export default class baseScene {
       grainScale: IS_IOS ? 0 : 0.001,
       colors: [this.color1, this.color2],
     });
-    this.vignette.name = "Vignette";
-    this.vignette.renderOrder = -1;
+    // this.vignette.name = "Vignette";
+    // this.vignette.renderOrder = -1;
+    this.vignette.mesh.name = "Vignette";
+    this.vignette.mesh.renderOrder = -1;
 
     this.copperControl = new Controls(this.camera);
     this.init();

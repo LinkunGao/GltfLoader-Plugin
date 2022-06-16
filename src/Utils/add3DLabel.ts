@@ -1,4 +1,5 @@
-import copperScene from "../Scene/copperScene";
+import baseScene from "../Scene/baseScene";
+import copperMScene from "../Scene/copperMScene";
 import * as THREE from "three";
 
 function createFont(
@@ -6,7 +7,11 @@ function createFont(
   x: number,
   y: number,
   z: number,
-  scaling: number
+  scaling: number,
+  option?: {
+    font_size: string;
+    font: string;
+  }
 ) {
   const bitmap = document.createElement("canvas");
   bitmap.width = 512;
@@ -19,7 +24,11 @@ function createFont(
 
   g.fillStyle = "rgb(255,255,255)";
   g.textAlign = "center";
-  g.font = "30px Helvetica";
+  if (option) {
+    g.font = option.font_size + " " + option.font;
+  } else {
+    g.font = "30px Helvetica";
+  }
   g.fillText(text, 256, 256);
   g.strokeStyle = "rgb(255,255,255)";
   g.strokeText(text, 256, 256);
@@ -40,14 +49,18 @@ function createFont(
 }
 
 export function addLabelToScene(
-  scene: copperScene,
+  scene: baseScene | copperMScene,
   text: string,
   x: number,
   y: number,
   z: number,
-  scaling: number
+  scaling: number,
+  option?: {
+    font_size: string;
+    font: string;
+  }
 ) {
-  const label = createFont(text, x, y, z, scaling);
+  const label = createFont(text, x, y, z, scaling, option);
   scene.addObject(label);
 }
 

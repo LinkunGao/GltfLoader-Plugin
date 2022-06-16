@@ -175,10 +175,38 @@ See tutorial 08
 
   - users can setup mutiple scene in a single page with only one WebGLRenderer and canvas.
 
+  - update raycaster function
+
+  - copperMSceneRenderer(bg:HtmlDivElement, 3: numerOfScene);
+
   - Useage:
 
   ```ts
+  import * as Copper from "gltfloader-plugin-test";
+  import "gltfloader-plugin-test/dist/css/style.css";
   appRenderer = new Copper.copperMSceneRenderer(bg, 3);
   ```
 
 See tutorial 09
+
+## Release v1.7.1
+
+- update nrrdloader callback function
+
+  - currently, it will return `volume` and `GUI`
+
+- fix background error
+
+- Add create demo model function in copperMScene class
+
+- update controls rotate speed
+
+- update addLabelToScene(copperScene,text,x,y,z,scale,fontOption) function
+  - fontOption
+    ```ts
+      {
+          font_size: "50px",
+          font: "Raleway",
+      }
+    ```
+    see toturial 6

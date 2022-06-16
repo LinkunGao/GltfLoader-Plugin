@@ -14,7 +14,7 @@ export interface optsType {
 export function copperNrrdLoader(
   url: string,
   scene: THREE.Scene,
-  callback?: (volume: any) => void,
+  callback?: (volume: any, gui?: GUI) => void,
   opts?: optsType
 ) {
   const loader = new NRRDLoader();
@@ -98,7 +98,11 @@ export function copperNrrdLoader(
           volume.repaintAllSlices();
         });
     }
-    callback && callback(volume);
+    if (gui) {
+      callback && callback(volume, gui);
+    } else {
+      callback && callback(volume);
+    }
   });
 }
 

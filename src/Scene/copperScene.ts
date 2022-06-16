@@ -7,6 +7,7 @@ import { pickModelDefault } from "../Utils/raycaster";
 import { copperNrrdLoader, optsType } from "../Loader/copperNrrdLoader";
 import { copperVtkLoader } from "../Loader/copperVtkLoader";
 import baseScene from "./baseScene";
+import { GUI } from "dat.gui";
 
 export default class copperScene extends baseScene {
   controls: TrackballControls;
@@ -44,14 +45,6 @@ export default class copperScene extends baseScene {
         gltf.scene.position.y += gltf.scene.position.y - center.y;
         gltf.scene.position.z += gltf.scene.position.z - center.z;
 
-        // gltf.scene.traverse((child) => {
-        //   if ((child as THREE.Mesh).isMesh) {
-        //     const a = (child as THREE.Mesh)
-        //       .material as THREE.MeshStandardMaterial;
-        //     a.flatShading = false;
-        //   }
-        // });
-
         if (!this.cameraPositionFlag) {
           this.camera.position.copy(center);
           this.camera.position.x += size / 2.0;
@@ -82,7 +75,11 @@ export default class copperScene extends baseScene {
     );
   }
 
-  loadNrrd(url: string, callback?: (volume: any) => void, opts?: optsType) {
+  loadNrrd(
+    url: string,
+    callback?: (volume: any, gui?: GUI) => void,
+    opts?: optsType
+  ) {
     copperNrrdLoader(url, this.scene, callback, opts);
   }
 
