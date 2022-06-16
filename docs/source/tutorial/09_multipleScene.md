@@ -1,4 +1,4 @@
-# 09 Multiple Scenes
+# Multiple Scenes
 
 - setup base environment
 
@@ -35,6 +35,7 @@
 
 ```ts
 import * as Copper from "gltfloader-plugin-test";
+import "gltfloader-plugin-test/dist/css/style.css";
 import { getCurrentInstance, onMounted } from "vue";
 
 let refs = null;

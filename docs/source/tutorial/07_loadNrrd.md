@@ -1,4 +1,4 @@
-# 07 Load Nrrd Image
+# Load Nrrd Image
 
 - Config html
 

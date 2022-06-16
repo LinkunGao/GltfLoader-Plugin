@@ -1,4 +1,4 @@
-# 01 LoadGltf Tutorial
+# LoadGltf Tutorial
 
 In Vue environment.
 

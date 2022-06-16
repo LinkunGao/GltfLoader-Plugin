@@ -1,4 +1,4 @@
-# 03 Share View for Different Scenes
+# Share View for Different Scenes
 
 - add buttons to load different scenes
 
