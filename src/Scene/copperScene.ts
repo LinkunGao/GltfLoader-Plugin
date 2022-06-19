@@ -64,7 +64,6 @@ export default class copperScene extends baseScene {
           else this.mixer?.clipAction(a).play();
         });
         this.content = gltf.scene;
-
         this.scene.add(gltf.scene);
         this.modelReady = true;
         callback && callback(gltf.scene);
@@ -115,6 +114,15 @@ export default class copperScene extends baseScene {
 
   setPlayRate(playRate: number) {
     this.playRate = playRate;
+  }
+
+  setModelPosition(
+    model: THREE.Group | THREE.Mesh,
+    position: { x?: number; y?: number; z?: number }
+  ) {
+    if (position.x) model.position.x = position.x;
+    if (position.y) model.position.y = position.y;
+    if (position.z) model.position.z = position.z;
   }
 
   resetView() {
