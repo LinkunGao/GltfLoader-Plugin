@@ -189,7 +189,7 @@ See tutorial 08
 
 See tutorial 09
 
-## Release v1.7.1
+## Release v1.8.0
 
 - update nrrdloader callback function
 
@@ -210,3 +210,7 @@ See tutorial 09
       }
     ```
     see toturial 6
+
+## Release v1.8.1
+
+- add setModelPosition(medel:THREE.Group|THREE.Mesh,position:{x:number,y:number,z:number}) in `copperScene`.
