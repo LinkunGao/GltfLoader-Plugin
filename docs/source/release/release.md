@@ -214,3 +214,7 @@ See tutorial 09
 ## Release v1.8.1
 
 - add setModelPosition(medel:THREE.Group|THREE.Mesh,position:{x:number,y:number,z:number}) in `copperScene`.
+
+## Release v1.8.2
+
+- add loadnrrd texture volume method.

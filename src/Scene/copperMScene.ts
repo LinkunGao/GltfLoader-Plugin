@@ -3,10 +3,15 @@ import { GUI, GUIController } from "dat.gui";
 import { Controls, CameraViewPoint } from "../Controls/copperControls";
 import { createBackground, customMeshType } from "../lib/three-vignette";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import { copperGltfLoader } from "../Loader/copperGltfLoader";
 import { pickModelDefault } from "../Utils/raycaster";
-import { copperNrrdLoader, optsType } from "../Loader/copperNrrdLoader";
+import {
+  copperNrrdLoader,
+  copperNrrdLoader1,
+  optsType,
+} from "../Loader/copperNrrdLoader";
 import { isIOS } from "../Utils/utils";
 
 const IS_IOS = isIOS();
@@ -16,7 +21,7 @@ export default class copperMScene {
   container: HTMLDivElement;
   renderer: THREE.WebGLRenderer;
   scene: THREE.Scene = new THREE.Scene();
-  camera: THREE.PerspectiveCamera;
+  camera: THREE.PerspectiveCamera | THREE.OrthographicCamera;
   sceneName: string = "";
   vignette: customMeshType;
   directionalLight: THREE.DirectionalLight;
@@ -26,12 +31,13 @@ export default class copperMScene {
   cameraPositionFlag = false;
   content: THREE.Group = new THREE.Group();
   isHalfed: boolean = false;
-  controls: TrackballControls;
+  controls: TrackballControls | OrbitControls;
   private pickableObjects: THREE.Mesh[] = [];
 
   private color1: string = "#5454ad";
   private color2: string = "#18e5a7";
   private lights: any[] = [];
+  private renderNrrdVolume: boolean = false;
 
   constructor(container: HTMLDivElement, renderer: THREE.WebGLRenderer) {
     this.container = container;
@@ -63,6 +69,7 @@ export default class copperMScene {
     this.camera.position.z = 2;
     this.container.appendChild(this.gui.domElement);
     this.addLights();
+    // window.addEventListener("resize", this.onWindowResize, false);
   }
   createDemoMesh() {
     const geometry = new THREE.BoxGeometry();
@@ -99,11 +106,10 @@ export default class copperMScene {
           this.camera.position.y += size / 5.0;
           this.camera.position.z += size / 2.0;
           this.camera.lookAt(center);
-          this.viewPoint = this.setViewPoint(this.camera, [
-            center.x,
-            center.y,
-            center.z,
-          ]);
+          this.viewPoint = this.setViewPoint(
+            this.camera as THREE.PerspectiveCamera,
+            [center.x, center.y, center.z]
+          );
         }
 
         // this.mixer = new THREE.AnimationMixer(gltf.scene);
@@ -138,7 +144,7 @@ export default class copperMScene {
     });
 
     pickModelDefault(
-      this.camera,
+      this.camera as THREE.PerspectiveCamera,
       this.container,
       this.pickableObjects,
       callback
@@ -171,6 +177,30 @@ export default class copperMScene {
     opts?: optsType
   ) {
     copperNrrdLoader(url, this.scene, callback, opts);
+  }
+
+  loadNrrd1(url: string, callback?: (volume: any, gui?: GUI) => void) {
+    const h = 512; // frustum height
+    const aspect = window.innerWidth / window.innerHeight;
+
+    this.camera = new THREE.OrthographicCamera(
+      (-h * aspect) / 2,
+      (h * aspect) / 2,
+      h / 2,
+      -h / 2,
+      1,
+      1000
+    );
+    this.camera.position.set(-64, -64, 128);
+    this.camera.up.set(0, 0, 1);
+    this.controls.dispose();
+    this.controls = new OrbitControls(this.camera, this.container);
+    this.controls.target.set(64, 64, 128);
+    this.controls.minZoom = 0.5;
+    this.controls.maxZoom = 4;
+    this.controls.enablePan = false;
+    this.renderNrrdVolume = true;
+    copperNrrdLoader1(url, this.scene, callback);
   }
 
   updateBackground(color1: string, color2: string) {
@@ -223,9 +253,26 @@ export default class copperMScene {
     this.copperControl.updateCameraViewPoint(viewpoint);
   }
 
+  onWindowResize = () => {
+    const { width, height } = this.container.getBoundingClientRect();
+    const aspect = width / height;
+    if (this.renderNrrdVolume) {
+      const volumeCamera = this.camera as THREE.OrthographicCamera;
+      const frustumHeight = volumeCamera.top - volumeCamera.bottom;
+
+      volumeCamera.left = (-frustumHeight * aspect) / 2;
+      volumeCamera.right = (frustumHeight * aspect) / 2;
+    } else {
+      (this.camera as THREE.PerspectiveCamera).aspect = aspect;
+    }
+    this.camera.updateProjectionMatrix();
+
+    this.controls.update();
+  };
+
   render() {
     this.controls.update();
-
+    this.onWindowResize();
     // if (this.modelReady) {
     //   this.mixer && this.mixer.update(this.clock.getDelta() * this.playRate);
     // }
