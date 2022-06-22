@@ -118,10 +118,6 @@ export default class copperMSceneRenderer {
     if (isOffscreen) {
       return;
     }
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-
-    controls.update();
     const positiveYUpBottom = this.renderer.domElement.clientHeight - bottom;
 
     this.renderer.setScissor(left, positiveYUpBottom, width, height);

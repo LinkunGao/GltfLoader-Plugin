@@ -1,6 +1,6 @@
 {
   "name": "gltfloader-plugin-test",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "for test",
   "main": "dist/bundle.umd.js",
   "moudle": "dist/bundle.esm.js",
@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/LinkunGao/GltfLoader-Plugin#readme",
   "devDependencies": {
+    "@rollup/plugin-image": "^2.1.1",
     "@rollup/plugin-typescript": "^8.3.2",
     "postcss": "^8.4.14",
     "rollup": "^2.74.1",

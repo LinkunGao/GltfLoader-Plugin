@@ -1,6 +1,9 @@
 import * as THREE from "three";
 import { NRRDLoader } from "three/examples/jsm/loaders/NRRDLoader";
 import copperScene from "../Scene/copperScene";
+import { VolumeRenderShader1 } from "three/examples/jsm/shaders/VolumeShader";
+import cm_gray from "../css/images/cm_gray.png";
+import cm_viridis from "../css/images/cm_viridis.png";
 import { GUI } from "dat.gui";
 
 let cube: THREE.Mesh;
@@ -103,6 +106,108 @@ export function copperNrrdLoader(
     } else {
       callback && callback(volume);
     }
+  });
+}
+
+export function copperNrrdLoader1(
+  url: string,
+  scene: THREE.Scene,
+  callback?: (volume: any, gui?: GUI) => void
+) {
+  const volconfig = {
+    clim1: 0,
+    clim2: 1,
+    renderStyle: "iso",
+    isothreshold: 0.15,
+    colormap: "viridis",
+  };
+
+  let cmtextures: { [key: string]: any };
+  let material: THREE.ShaderMaterial;
+
+  let mesh: THREE.Mesh;
+
+  new NRRDLoader().load(url, function (volume) {
+    const texture = new THREE.Data3DTexture(
+      volume.data as any,
+      volume.xLength,
+      volume.yLength,
+      volume.zLength
+    );
+    texture.format = THREE.RedFormat;
+    texture.type = THREE.FloatType;
+    texture.minFilter = texture.magFilter = THREE.LinearFilter;
+    texture.unpackAlignment = 1;
+    texture.needsUpdate = true;
+
+    // colormap texture
+    cmtextures = {
+      viridis: new THREE.TextureLoader().load(cm_viridis),
+      gary: new THREE.TextureLoader().load(cm_gray),
+    };
+
+    // Material
+    const shader = VolumeRenderShader1;
+
+    const uniforms = THREE.UniformsUtils.clone(shader.uniforms);
+
+    uniforms["u_data"].value = texture;
+    uniforms["u_size"].value.set(
+      volume.xLength,
+      volume.yLength,
+      volume.zLength
+    );
+    uniforms["u_clim"].value.set(volconfig.clim1, volconfig.clim2);
+    uniforms["u_renderstyle"].value = volconfig.renderStyle === "mip" ? 0 : 1; // mip 0, iso 1
+    uniforms["u_renderthreshold"].value = volconfig.isothreshold; // for iso render style
+    uniforms["u_cmdata"].value = cmtextures[volconfig.colormap];
+
+    material = new THREE.ShaderMaterial({
+      uniforms: uniforms,
+      vertexShader: shader.vertexShader,
+      fragmentShader: shader.fragmentShader,
+      side: THREE.BackSide, // The volume shader uses the backface as its "reference point"
+    });
+
+    // Mesh
+    const geometry = new THREE.BoxGeometry(
+      volume.xLength,
+      volume.yLength,
+      volume.zLength
+    );
+    geometry.translate(
+      volume.xLength / 2 - 0.5,
+      volume.yLength / 2 - 0.5,
+      volume.zLength / 2 - 0.5
+    );
+    mesh = new THREE.Mesh(geometry, material);
+
+    const boxHelper = new THREE.BoxHelper(mesh);
+    scene.add(boxHelper);
+    boxHelper.applyMatrix4((volume as any).matrix);
+
+    scene.add(mesh);
+
+    const gui = new GUI();
+    gui.add(volconfig, "clim1", 0, 1, 0.01).onChange(updateUniforms);
+    gui.add(volconfig, "clim2", 0, 1, 0.01).onChange(updateUniforms);
+    gui
+      .add(volconfig, "colormap", { gray: "gray", viridis: "viridis" })
+      .onChange(updateUniforms);
+    gui
+      .add(volconfig, "renderStyle", { mip: "mip", iso: "iso" })
+      .onChange(updateUniforms);
+    gui.add(volconfig, "isothreshold", 0, 1, 0.01).onChange(updateUniforms);
+
+    function updateUniforms() {
+      material.uniforms["u_clim"].value.set(volconfig.clim1, volconfig.clim2);
+      material.uniforms["u_renderstyle"].value =
+        volconfig.renderStyle == "mip" ? 0 : 1; // 0: MIP, 1: ISO
+      material.uniforms["u_renderthreshold"].value = volconfig.isothreshold; // For ISO renderstyle
+      material.uniforms["u_cmdata"].value = cmtextures[volconfig.colormap];
+    }
+
+    callback && callback(volume, gui);
   });
 }
 
