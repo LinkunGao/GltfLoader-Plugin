@@ -5,6 +5,7 @@ import { VolumeRenderShader1 } from "three/examples/jsm/shaders/VolumeShader";
 import cm_gray from "../css/images/cm_gray.png";
 import cm_viridis from "../css/images/cm_viridis.png";
 import { GUI } from "dat.gui";
+import { nrrdMeshesType } from "../types/types";
 
 let cube: THREE.Mesh;
 let gui: GUI;
@@ -17,10 +18,11 @@ export interface optsType {
 export function copperNrrdLoader(
   url: string,
   scene: THREE.Scene,
-  callback?: (volume: any, gui?: GUI) => void,
+  callback?: (volume: any, nrrdMeshes: nrrdMeshesType, gui?: GUI) => void,
   opts?: optsType
 ) {
   const loader = new NRRDLoader();
+  let nrrdMeshes: nrrdMeshesType;
 
   loader.load(url, function (volume: any) {
     configGui(opts);
@@ -35,7 +37,7 @@ export function copperNrrdLoader(
     cube = new THREE.Mesh(geometry, material);
     cube.visible = false;
 
-    scene.add(cube);
+    // scene.add(cube);
 
     const sliceZ = volume.extractSlice(
       "z",
@@ -53,9 +55,19 @@ export function copperNrrdLoader(
     // sliceY.geometry.parameters.width = 300;
     // sliceY.geometry.boundingSphere.radius = 194.94330668752295;
 
-    scene.add(sliceZ.mesh);
-    scene.add(sliceY.mesh);
-    scene.add(sliceX.mesh);
+    nrrdMeshes = {
+      x: sliceX.mesh,
+      y: sliceY.mesh,
+      z: sliceZ.mesh,
+      cube,
+    };
+    // nrrdMeshes.x = sliceX.mesh;
+    // nrrdMeshes.y = sliceY.mesh;
+    // nrrdMeshes.z = sliceZ.mesh;
+
+    // scene.add(sliceZ.mesh);
+    // scene.add(sliceY.mesh);
+    // scene.add(sliceX.mesh);
     if (gui) {
       gui
         .add(sliceX, "index", 0, volume.RASDimensions[0], 1)
@@ -102,9 +114,9 @@ export function copperNrrdLoader(
         });
     }
     if (gui) {
-      callback && callback(volume, gui);
+      callback && callback(volume, nrrdMeshes, gui);
     } else {
-      callback && callback(volume);
+      callback && callback(volume, nrrdMeshes);
     }
   });
 }

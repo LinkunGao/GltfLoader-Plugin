@@ -8,6 +8,7 @@ import { copperNrrdLoader, optsType } from "../Loader/copperNrrdLoader";
 import { copperVtkLoader } from "../Loader/copperVtkLoader";
 import baseScene from "./baseScene";
 import { GUI } from "dat.gui";
+import { nrrdMeshesType } from "../types/types";
 
 export default class copperScene extends baseScene {
   controls: TrackballControls;
@@ -76,7 +77,7 @@ export default class copperScene extends baseScene {
 
   loadNrrd(
     url: string,
-    callback?: (volume: any, gui?: GUI) => void,
+    callback?: (volume: any, nrrdMeshes: nrrdMeshesType, gui?: GUI) => void,
     opts?: optsType
   ) {
     copperNrrdLoader(url, this.scene, callback, opts);
