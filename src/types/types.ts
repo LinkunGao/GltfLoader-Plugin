@@ -42,6 +42,20 @@ interface baseStateType {
   [key: string]: string | number | boolean | {};
 }
 
+export interface SensorDecodedValue_kiwrious {
+  type: string;
+  label: string;
+  value: any;
+}
+export interface SensorReadResult_kiwrious {
+  sensorType: string;
+  decodedValues: SensorDecodedValue_kiwrious[];
+}
+export interface HeartRateResult_kiwrious {
+  status: string;
+  value?: number;
+}
+
 export type {
   SceneMapType,
   optType,
