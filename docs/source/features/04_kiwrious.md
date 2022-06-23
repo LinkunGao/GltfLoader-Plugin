@@ -17,6 +17,9 @@ npm i copper3d_plugin_kiwrious
 ```js
 import * as copper3d_plugin_kiwrious from "copper3d_plugin_heart_k";
 copper3d_plugin_kiwrious.setWasm("./791f4146c35521990ba3e84e823a55f3.wasm");
+copper3d_plugin_kiwrious.setBinUrl(
+  "/kiwrious-config/f1877cdf3dec53d47652f14c1e1b12c1.bin"
+);
 ```
 
 - Step2: connect Kiwrious

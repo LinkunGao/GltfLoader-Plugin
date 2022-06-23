@@ -42,16 +42,22 @@ interface baseStateType {
   [key: string]: string | number | boolean | {};
 }
 
-export interface SensorDecodedValue_kiwrious {
+interface nrrdMeshesType {
+  x: THREE.Mesh;
+  y: THREE.Mesh;
+  z: THREE.Mesh;
+  cube: THREE.Mesh;
+}
+interface SensorDecodedValue_kiwrious {
   type: string;
   label: string;
   value: any;
 }
-export interface SensorReadResult_kiwrious {
+interface SensorReadResult_kiwrious {
   sensorType: string;
   decodedValues: SensorDecodedValue_kiwrious[];
 }
-export interface HeartRateResult_kiwrious {
+interface HeartRateResult_kiwrious {
   status: string;
   value?: number;
 }
@@ -63,4 +69,8 @@ export type {
   modelVisualisationDataType,
   preRenderCallbackFunctionType,
   baseStateType,
+  nrrdMeshesType,
+  SensorDecodedValue_kiwrious,
+  SensorReadResult_kiwrious,
+  HeartRateResult_kiwrious,
 };

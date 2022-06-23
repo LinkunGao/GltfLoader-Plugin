@@ -7,6 +7,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import { copperGltfLoader } from "../Loader/copperGltfLoader";
 import { pickModelDefault } from "../Utils/raycaster";
+import { nrrdMeshesType } from "../types/types";
 import {
   copperNrrdLoader,
   copperNrrdLoader1,
@@ -173,7 +174,7 @@ export default class copperMScene {
 
   loadNrrd(
     url: string,
-    callback?: (volume: any, gui?: GUI) => void,
+    callback?: (volume: any, nrrdMeshes: nrrdMeshesType, gui?: GUI) => void,
     opts?: optsType
   ) {
     copperNrrdLoader(url, this.scene, callback, opts);
