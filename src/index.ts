@@ -1,4 +1,4 @@
-import * as kiwrious from "copper3d_plugin_heart_k";
+// import * as kiwrious from "copper3d_plugin_heart_k";
 
 import copperRenderer from "./Renderer/copperRenderer";
 import { setHDRFilePath } from "./lib/environment/index";
@@ -18,7 +18,7 @@ import copperSceneOnDemond from "./Scene/copperSceneOnDemond";
 import copperMSceneRenderer from "./Renderer/copperMSceneRenderer";
 import copperMScene from "./Scene/copperMScene";
 
-import { configKiwriousHeart } from "./Utils/kiwrious/configKiwrious";
+import { configKiwriousHeart, kiwrious } from "./Utils/kiwrious/configKiwrious";
 
 import {
   nrrdMeshesType,

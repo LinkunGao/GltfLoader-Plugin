@@ -1,8 +1,19 @@
-import * as kiwrious from "copper3d_plugin_heart_k";
+import * as kiwrious_ from "copper3d_plugin_heart_k";
+// const {
+//   serialService,
+//   setBinUrl,
+//   setWasm,
+// } = require("copper3d_plugin_heart_k");
 import {
   SensorReadResult_kiwrious,
   SensorDecodedValue_kiwrious,
 } from "../../types/types";
+
+export const kiwrious = {
+  serialService: kiwrious_.default.serialService,
+  setBinUrl: kiwrious_.default.setBinUrl,
+  setWasm: kiwrious_.default.setWasm,
+};
 
 export function configKiwriousHeart(
   connectBtn: HTMLButtonElement,
