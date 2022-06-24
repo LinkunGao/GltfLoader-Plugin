@@ -18,7 +18,8 @@ import copperSceneOnDemond from "./Scene/copperSceneOnDemond";
 import copperMSceneRenderer from "./Renderer/copperMSceneRenderer";
 import copperMScene from "./Scene/copperMScene";
 
-import { configKiwriousHeart, kiwrious } from "./Utils/kiwrious/configKiwrious";
+import { configKiwriousHeart } from "./Utils/kiwrious/configKiwrious";
+import kiwrious from "./Utils/kiwrious/configKiwrious";
 
 import {
   nrrdMeshesType,

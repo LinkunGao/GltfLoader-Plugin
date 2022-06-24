@@ -9,11 +9,14 @@ import {
   SensorDecodedValue_kiwrious,
 } from "../../types/types";
 
-export const kiwrious = {
-  serialService: kiwrious_.default.serialService,
-  setBinUrl: kiwrious_.default.setBinUrl,
+const serialService = kiwrious_.default.serialService;
+const setBinUrl = kiwrious_.default.setBinUrl;
+const kiwrious = {
+  serialService,
+  setBinUrl,
   setWasm: kiwrious_.default.setWasm,
 };
+export default kiwrious;
 
 export function configKiwriousHeart(
   connectBtn: HTMLButtonElement,
