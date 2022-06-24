@@ -1,6 +1,6 @@
 {
   "name": "Copper3D_Visualisation",
-  "version": "1.8.4",
+  "version": "1.8.5",
   "description": "for test",
   "main": "dist/bundle.umd.js",
   "moudle": "dist/bundle.esm.js",
