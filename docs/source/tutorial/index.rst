@@ -14,3 +14,4 @@ Tutorial
     07_loadNrrd
     08_renderOnDemond
     09_multipleScene
+    10_kiwriousHeart

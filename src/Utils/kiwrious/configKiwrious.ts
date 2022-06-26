@@ -1,8 +1,31 @@
-import * as kiwrious from "copper3d_plugin_heart_k";
+import * as kiwrious_ from "copper3d_plugin_heart_k";
 import {
   SensorReadResult_kiwrious,
   SensorDecodedValue_kiwrious,
+  SerialService_kiwrious,
+  kiwriousType,
 } from "../../types/types";
+
+let serialService: SerialService_kiwrious;
+let setBinUrl: (url: string) => void;
+let setWasm: (url: string) => void;
+
+if (kiwrious_.default) {
+  serialService = kiwrious_.default.serialService;
+  setBinUrl = kiwrious_.default.setBinUrl;
+  setWasm = kiwrious_.default.setWasm;
+} else {
+  serialService = kiwrious_.serialService;
+  setBinUrl = kiwrious_.setBinUrl;
+  setWasm = kiwrious_.setWasm;
+}
+
+const kiwrious: kiwriousType = {
+  serialService,
+  setBinUrl,
+  setWasm,
+};
+export default kiwrious;
 
 export function configKiwriousHeart(
   connectBtn: HTMLButtonElement,
@@ -39,7 +62,5 @@ export function configKiwriousHeart(
 
     const val = values[0].value;
     heartDataCallback(val, val.status, val.heartrate);
-    // const status = val.status;
-    // const hrVal = val.heartrate;
   };
 }

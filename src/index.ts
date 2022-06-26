@@ -1,4 +1,4 @@
-import * as kiwrious from "copper3d_plugin_heart_k";
+// import * as kiwrious from "copper3d_plugin_heart_k";
 
 import copperRenderer from "./Renderer/copperRenderer";
 import { setHDRFilePath } from "./lib/environment/index";
@@ -19,6 +19,7 @@ import copperMSceneRenderer from "./Renderer/copperMSceneRenderer";
 import copperMScene from "./Scene/copperMScene";
 
 import { configKiwriousHeart } from "./Utils/kiwrious/configKiwrious";
+import kiwrious from "./Utils/kiwrious/configKiwrious";
 
 import {
   nrrdMeshesType,
@@ -30,7 +31,7 @@ import {
 import "./css/style.css";
 
 console.log(
-  "%cMedtech Heart Plugin %cBeta:v1.8.3",
+  "%cMedtech Heart Plugin %cBeta:v1.8.8",
   "padding: 3px;color:white; background:#023047",
   "padding: 3px;color:white; background:#219EBC"
 );
