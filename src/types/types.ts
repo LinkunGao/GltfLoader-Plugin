@@ -62,6 +62,38 @@ interface HeartRateResult_kiwrious {
   value?: number;
 }
 
+declare class SerialService_kiwrious {
+  onSerialData?: (data: SensorReadResult_kiwrious) => void;
+  onSerialConnection?: (connect: boolean) => void;
+  private _isConnected;
+  private _isReading;
+  private _port;
+  private _reader;
+  constructor();
+  private _log;
+  private _err;
+  get isReading(): boolean;
+  get canResumeReading(): boolean;
+  triggerStopReading(): void;
+  private closeReader;
+  private closePortAsync;
+  resumeReading(): Promise<void>;
+  disconnectAsync(): Promise<void>;
+  connectAndReadAsync(): Promise<void>;
+  private startStage1RequestPortAsync;
+  private startStage2ConnectPortAsync;
+  private stopStage2ClosePortAsync;
+  private connectPortAsync;
+  private startReading;
+}
+
+interface kiwriousType {
+  serialService: SerialService_kiwrious;
+
+  setBinUrl: (url: string) => void;
+  setWasm: (url: string) => void;
+}
+
 export type {
   SceneMapType,
   optType,
@@ -73,4 +105,6 @@ export type {
   SensorDecodedValue_kiwrious,
   SensorReadResult_kiwrious,
   HeartRateResult_kiwrious,
+  SerialService_kiwrious,
+  kiwriousType,
 };
