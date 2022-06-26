@@ -223,3 +223,11 @@ See tutorial 09
 
 - add kiwrious
 - add volume mesh in nrrdloader callback function
+
+## Release v1.8.8
+
+- fixed kiwrious error
+- add kiwrious types
+  - more information see `toturial 10`
+- update nrrdloader function
+  - Now the nrrdloader will not automatcially add slices (x,y,z) for you. But it add a callback function parameter to return x,y,z slices. So, Users can add slices according to their preferences. `see toturial 07`

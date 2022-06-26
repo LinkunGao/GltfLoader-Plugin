@@ -86,7 +86,10 @@ function loadNrrd(url: string, name: string) {
 
     /*add a callback function to get volume*/
 
-    const getVolume = (volume: any) => {
+    const getVolume = (volume: any, nrrdMesh: Copper.nrrdMeshesType) => {
+      sceneIn.addObject(nrrdMesh.x);
+      sceneIn.addObject(nrrdMesh.y);
+      sceneIn.addObject(nrrdMesh.z);
       Copper.addBoxHelper(scene as Copper.copperScene, volume);
     };
 
@@ -111,8 +114,15 @@ function loadNrrd(url: string, name: string) {
       openGui: true,
       container: c_gui,
     };
-    const getVolume = (volume: any) => {
+    const getVolume = (
+      volume: any,
+      nrrdMesh: Copper.nrrdMeshesType,
+      gui?: GUI
+    ) => {
+      sceneIn.addObject(nrrdMesh.x);
+
       Copper.addBoxHelper(scene as Copper.copperScene, volume);
+      (gui as GUI).closed = true;
     };
     if (scene) {
       appRenderer.setCurrentScene(scene);
