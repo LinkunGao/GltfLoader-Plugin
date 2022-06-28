@@ -15,3 +15,4 @@ Tutorial
     08_renderOnDemond
     09_multipleScene
     10_kiwriousHeart
+    10_kiwriousInNuxtjs
