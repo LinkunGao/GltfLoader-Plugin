@@ -78,8 +78,8 @@ onMounted(() => {
 
 ```ts
 function startKiwrious() {
-  Copper.kiwrious.setWasm("/kiwrious-config/libunicorn.out.wasm");
-  Copper.kiwrious.setBinUrl("/kiwrious-config/prog.bin");
+  Copper.kiwrious.setWasm("kiwrious-config/libunicorn.out.wasm");
+  Copper.kiwrious.setBinUrl("kiwrious-config/prog.bin");
   Copper.kiwrious.serialService.onSerialConnection = (isConnected: boolean) => {
     console.log(isConnected);
     connect.style.display = isConnected ? "none" : "block";
