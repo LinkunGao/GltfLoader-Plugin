@@ -267,3 +267,8 @@ See tutorial 09
     y: number;
   }
   ```
+
+## Release v1.8.12
+
+- fix bugs in copperMScene
+  - use the Array.isArray() instead of using vue isArray()

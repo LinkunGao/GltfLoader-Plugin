@@ -14,7 +14,6 @@ import {
   optsType,
 } from "../Loader/copperNrrdLoader";
 import { isIOS } from "../Utils/utils";
-import { isArray } from "@vue/shared";
 
 const IS_IOS = isIOS();
 
@@ -157,7 +156,7 @@ export default class copperMScene {
     content: THREE.Mesh | Array<THREE.Mesh>,
     mousePosition: mouseMovePositionType
   ) {
-    if (isArray(content)) {
+    if (Array.isArray(content)) {
       this.pickableObjects = content;
     } else {
       this.pickableObjects.push(content);
