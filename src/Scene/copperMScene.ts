@@ -6,14 +6,15 @@ import { TrackballControls } from "three/examples/jsm/controls/TrackballControls
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import { copperGltfLoader } from "../Loader/copperGltfLoader";
-import { pickModelDefault } from "../Utils/raycaster";
-import { nrrdMeshesType } from "../types/types";
+import { pickModelDefault, isPickedModel } from "../Utils/raycaster";
+import { nrrdMeshesType, mouseMovePositionType } from "../types/types";
 import {
   copperNrrdLoader,
   copperNrrdLoader1,
   optsType,
 } from "../Loader/copperNrrdLoader";
 import { isIOS } from "../Utils/utils";
+import { isArray } from "@vue/shared";
 
 const IS_IOS = isIOS();
 
@@ -151,6 +152,24 @@ export default class copperMScene {
       callback
     );
   }
+
+  pickSpecifiedModel(
+    content: THREE.Mesh | Array<THREE.Mesh>,
+    mousePosition: mouseMovePositionType
+  ) {
+    if (isArray(content)) {
+      this.pickableObjects = content;
+    } else {
+      this.pickableObjects.push(content);
+    }
+    return isPickedModel(
+      this.camera as THREE.PerspectiveCamera,
+      this.container,
+      this.pickableObjects,
+      mousePosition
+    );
+  }
+
   setViewPoint(
     camera: THREE.PerspectiveCamera,
     target?: number[]

@@ -39,6 +39,8 @@ export function copperNrrdLoader(
 
     // scene.add(cube);
 
+    // volume.axisOrder = ["x", "y", "z"];
+
     const sliceZ = volume.extractSlice(
       "z",
       Math.floor(volume.RASDimensions[2] / 4)
@@ -54,6 +56,8 @@ export function copperNrrdLoader(
     );
     // sliceY.geometry.parameters.width = 300;
     // sliceY.geometry.boundingSphere.radius = 194.94330668752295;
+
+    console.log(sliceX.mesh);
 
     nrrdMeshes = {
       x: sliceX.mesh,
@@ -146,6 +150,7 @@ export function copperNrrdLoader1(
       volume.yLength,
       volume.zLength
     );
+    volume.axisOrder = ["x", "y", "z"];
     texture.format = THREE.RedFormat;
     texture.type = THREE.FloatType;
     texture.minFilter = texture.magFilter = THREE.LinearFilter;

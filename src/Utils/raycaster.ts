@@ -1,4 +1,9 @@
 import * as THREE from "three";
+import { mouseMovePositionType } from "../types/types";
+
+let raycaster = new THREE.Raycaster();
+let intersects: THREE.Intersection[];
+let intersectedObject: THREE.Object3D | null;
 
 export function pickModelDefault(
   camera: THREE.PerspectiveCamera,
@@ -6,9 +11,6 @@ export function pickModelDefault(
   pickableObjects: THREE.Mesh[],
   callback: (selectMesh: THREE.Mesh | undefined) => void
 ) {
-  const raycaster = new THREE.Raycaster();
-  let intersects: THREE.Intersection[];
-  let intersectedObject: THREE.Object3D | null;
   const highlightedMaterial = new THREE.MeshBasicMaterial({
     wireframe: true,
     color: 0x00ff66,
@@ -24,19 +26,14 @@ export function pickModelDefault(
 
   const onDocumentMouseMove = (event: MouseEvent) => {
     const mouseMovePosition = new THREE.Vector2(event.offsetX, event.offsetY);
-    raycaster.setFromCamera(
-      {
-        x: (mouseMovePosition.x / container.clientWidth) * 2 - 1,
-        y: -(mouseMovePosition.y / container.clientHeight) * 2 + 1,
-      },
-      camera
+
+    intersects = baseRaycaster(
+      camera,
+      container,
+      pickableObjects,
+      mouseMovePosition.x,
+      mouseMovePosition.y
     );
-    intersects = raycaster.intersectObjects(pickableObjects, false);
-    // const b: { [key: string]: string } = {};
-    // intersects.forEach((a) => {
-    //   b[a.object.name] = a.object.name;
-    // });
-    // console.log(b);
     if (intersects.length > 0) {
       intersectedObject = intersects[0].object;
     } else {
@@ -73,4 +70,50 @@ function throttle(callback: (event: MouseEvent) => void, wait: number) {
       start = current;
     }
   };
+}
+
+function baseRaycaster(
+  camera: THREE.PerspectiveCamera,
+  container: HTMLDivElement,
+  pickableObjects: THREE.Mesh[],
+  mouse_x: number,
+  mouse_y: number
+): THREE.Intersection[] {
+  raycaster.setFromCamera(
+    {
+      x: (mouse_x / container.clientWidth) * 2 - 1,
+      y: -(mouse_y / container.clientHeight) * 2 + 1,
+    },
+    camera
+  );
+  intersects = raycaster.intersectObjects(pickableObjects, false);
+  return intersects;
+}
+
+export function isPickedModel(
+  camera: THREE.PerspectiveCamera,
+  container: HTMLDivElement,
+  pickableObjects: THREE.Mesh[],
+  mouseMovePosition: mouseMovePositionType
+): THREE.Object3D<THREE.Event> | null {
+  // const raycaster = new THREE.Raycaster();
+
+  // container.onkeydown = (ev: KeyboardEvent) => {
+  //   console.log(ev);
+  // };
+  intersects = baseRaycaster(
+    camera,
+    container,
+    pickableObjects,
+    mouseMovePosition.x,
+    mouseMovePosition.y
+  );
+
+  if (intersects.length > 0) {
+    intersectedObject = intersects[0].object;
+  } else {
+    intersectedObject = null;
+  }
+
+  return intersectedObject;
 }
