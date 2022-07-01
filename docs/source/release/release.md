@@ -231,3 +231,39 @@ See tutorial 09
   - more information see `toturial 10`
 - update nrrdloader function
   - Now the nrrdloader will not automatcially add slices (x,y,z) for you. But it add a callback function parameter to return x,y,z slices. So, Users can add slices according to their preferences. `see toturial 07`
+
+## Release v1.8.10
+
+- update kiwrious copper3d plugin package
+- add docs for developing nuxtjs
+
+## Release v1.8.11
+
+- optimize raycaster function
+
+- add a ispickisPickedModel(camera,
+  container,
+  pickableObjects,
+  mouseMovePosition
+  ) in raycaster
+
+  - camera: THREE.PerspectiveCamera,
+  - container: HTMLDivElement,
+  - pickableObjects: THREE.Mesh[],
+  - mouseMovePosition: mouseMovePositionType
+  - return: THREE.Object3D<THREE.Event> | null
+
+- add pickSpecifiedModel( content, mousePosition) in copperMScene
+
+  - content: THREE.Mesh | Array<THREE.Mesh>,
+  - mousePosition: mouseMovePositionType
+  - return: THREE.Object3D<THREE.Event> | null
+
+- mouseMovePositionType in types
+
+  ```js
+  interface mouseMovePositionType {
+    x: number;
+    y: number;
+  }
+  ```

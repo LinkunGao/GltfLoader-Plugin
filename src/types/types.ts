@@ -48,6 +48,8 @@ interface nrrdMeshesType {
   z: THREE.Mesh;
   cube: THREE.Mesh;
 }
+
+// kiwrious
 interface SensorDecodedValue_kiwrious {
   type: string;
   label: string;
@@ -94,6 +96,13 @@ interface kiwriousType {
   setWasm: (url: string) => void;
 }
 
+// raycaster
+
+interface mouseMovePositionType {
+  x: number;
+  y: number;
+}
+
 export type {
   SceneMapType,
   optType,
@@ -107,4 +116,5 @@ export type {
   HeartRateResult_kiwrious,
   SerialService_kiwrious,
   kiwriousType,
+  mouseMovePositionType,
 };
