@@ -336,3 +336,9 @@ See tutorial 09
   - step3: `click` your mouse on nrrd image and `drag`.
 
 See tutorial 12 - drag and reset nrrd image.
+
+## Release v1.8.14
+
+- update cursor, when user use drag nrrd function.
+- change cameraPositionType in copperMSceneRenderer to positionType.
+- clean code.

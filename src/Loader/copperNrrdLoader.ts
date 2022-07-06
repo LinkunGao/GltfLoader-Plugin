@@ -277,6 +277,7 @@ export function dragImageWithMode(
   container.onkeydown = (ev: KeyboardEvent) => {
     if (ev.key === "Shift") {
       controls.enabled = false;
+      container.style.cursor = "pointer";
       container.addEventListener("mousedown", handleOnMouseDown, false);
       container.addEventListener("mouseup", handleOnMouseUp, false);
     }
@@ -284,6 +285,7 @@ export function dragImageWithMode(
   container.onkeyup = (ev: KeyboardEvent) => {
     if (ev.key === "Shift") {
       controls.enabled = true;
+      container.style.cursor = "";
       container.removeEventListener("mousedown", handleOnMouseDown, false);
       container.removeEventListener("mouseup", handleOnMouseUp, false);
     }
