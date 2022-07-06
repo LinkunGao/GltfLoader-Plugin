@@ -1,19 +1,8 @@
 import * as THREE from "three";
-import { GUI } from "dat.gui";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { customMeshType } from "../lib/three-vignette";
 import { environments, environmentType } from "../lib/environment/index";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import copperMScene from "../Scene/copperMScene";
-
-// interface sceneInfoType {
-//   [key: string]: copperMScene2;
-// }
-interface cameraPositionType {
-  x: number;
-  y: number;
-  z: number;
-}
+import { positionType } from "../types/types";
 
 export default class copperMSceneRenderer {
   numberOfScene: number;
@@ -32,7 +21,7 @@ export default class copperMSceneRenderer {
   constructor(
     container: HTMLDivElement,
     numberOfScene: number,
-    cameraPosition?: cameraPositionType
+    cameraPosition?: positionType
   ) {
     this.numberOfScene = numberOfScene > 0 ? numberOfScene : 1;
     this.container = container;
