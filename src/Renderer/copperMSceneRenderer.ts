@@ -101,10 +101,7 @@ export default class copperMSceneRenderer {
   }
 
   renderSceneInfo = (sceneInfo: copperMScene) => {
-    const scene = sceneInfo.scene;
     const elem = sceneInfo.container;
-    const camera = sceneInfo.camera;
-    const controls = sceneInfo.controls;
 
     // get the viewpoint relative position of this element
     const { left, right, top, bottom, width, height } =

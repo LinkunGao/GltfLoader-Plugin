@@ -46,7 +46,18 @@ interface nrrdMeshesType {
   x: THREE.Mesh;
   y: THREE.Mesh;
   z: THREE.Mesh;
-  cube: THREE.Mesh;
+}
+interface nrrdSliceType {
+  x: any;
+  y: any;
+  z: any;
+}
+
+type nrrdModeType = "mode0" | "mode1";
+
+interface nrrdDragImageOptType {
+  mode?: nrrdModeType;
+  showNumber?: boolean;
 }
 
 // kiwrious
@@ -103,6 +114,12 @@ interface mouseMovePositionType {
   y: number;
 }
 
+interface positionType {
+  x?: number;
+  y?: number;
+  z?: number;
+}
+
 export type {
   SceneMapType,
   optType,
@@ -111,10 +128,14 @@ export type {
   preRenderCallbackFunctionType,
   baseStateType,
   nrrdMeshesType,
+  nrrdSliceType,
+  nrrdModeType,
+  nrrdDragImageOptType,
   SensorDecodedValue_kiwrious,
   SensorReadResult_kiwrious,
   HeartRateResult_kiwrious,
   SerialService_kiwrious,
   kiwriousType,
   mouseMovePositionType,
+  positionType,
 };
