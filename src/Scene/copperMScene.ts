@@ -7,10 +7,17 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import { copperGltfLoader } from "../Loader/copperGltfLoader";
 import { pickModelDefault, isPickedModel } from "../Utils/raycaster";
-import { nrrdMeshesType, mouseMovePositionType } from "../types/types";
+import {
+  nrrdMeshesType,
+  mouseMovePositionType,
+  positionType,
+  nrrdSliceType,
+  nrrdDragImageOptType,
+} from "../types/types";
 import {
   copperNrrdLoader,
   copperNrrdLoader1,
+  dragImageWithMode,
   optsType,
 } from "../Loader/copperNrrdLoader";
 import { isIOS } from "../Utils/utils";
@@ -187,12 +194,18 @@ export default class copperMScene {
       viewPoint.targetPosition = [0, 0, 0];
     }
     viewPoint.upVector = [camera.up.x, camera.up.y, camera.up.z];
+    this.viewPoint = viewPoint;
     return viewPoint;
   }
 
   loadNrrd(
     url: string,
-    callback?: (volume: any, nrrdMeshes: nrrdMeshesType, gui?: GUI) => void,
+    callback?: (
+      volume: any,
+      nrrdMeshes: nrrdMeshesType,
+      nrrdSlices: nrrdSliceType,
+      gui?: GUI
+    ) => void,
     opts?: optsType
   ) {
     copperNrrdLoader(url, this.scene, callback, opts);
@@ -220,6 +233,15 @@ export default class copperMScene {
     this.controls.enablePan = false;
     this.renderNrrdVolume = true;
     copperNrrdLoader1(url, this.scene, callback);
+  }
+
+  dragImage(slice: any, opts?: nrrdDragImageOptType) {
+    dragImageWithMode(
+      this.container,
+      this.controls as TrackballControls,
+      slice,
+      opts
+    );
   }
 
   updateBackground(color1: string, color2: string) {
@@ -270,6 +292,23 @@ export default class copperMScene {
     viewpoint.targetPosition = viewpointData.targetPosition;
     viewpoint.upVector = viewpointData.upVector;
     this.copperControl.updateCameraViewPoint(viewpoint);
+  }
+  updateCamera(viewpoint: CameraViewPoint) {
+    this.cameraPositionFlag = true;
+    this.copperControl.updateCameraViewPoint(viewpoint);
+  }
+
+  setCameraPosition(position: positionType) {
+    if (typeof position.x === "number") this.camera.position.x = position.x;
+    if (typeof position.y === "number") this.camera.position.y = position.y;
+    if (typeof position.z === "number") this.camera.position.z = position.z;
+
+    this.setViewPoint(this.camera as THREE.PerspectiveCamera);
+  }
+
+  resetView() {
+    this.controls.reset();
+    this.updateCamera(this.viewPoint);
   }
 
   onWindowResize = () => {

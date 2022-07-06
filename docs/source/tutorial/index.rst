@@ -16,3 +16,4 @@ Tutorial
     09_multipleScene
     10_kiwriousHeart
     10_kiwriousInNuxtjs
+    11_dragAndResetNrrd

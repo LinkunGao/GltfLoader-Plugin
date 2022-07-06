@@ -23,6 +23,7 @@ import kiwrious from "./Utils/kiwrious/configKiwrious";
 
 import {
   nrrdMeshesType,
+  nrrdSliceType,
   SensorDecodedValue_kiwrious,
   SensorReadResult_kiwrious,
   HeartRateResult_kiwrious,
@@ -31,7 +32,7 @@ import {
 import "./css/style.css";
 
 console.log(
-  "%cMedtech Heart Plugin %cBeta:v1.8.12",
+  "%cMedtech Heart Plugin %cBeta:v1.8.13",
   "padding: 3px;color:white; background:#023047",
   "padding: 3px;color:white; background:#219EBC"
 );
@@ -59,6 +60,7 @@ export type {
   screenPosType,
   optsType,
   nrrdMeshesType,
+  nrrdSliceType,
   SensorDecodedValue_kiwrious,
   SensorReadResult_kiwrious,
   HeartRateResult_kiwrious,

@@ -272,3 +272,67 @@ See tutorial 09
 
 - fix bugs in copperMScene
   - use the Array.isArray() instead of using vue isArray()
+
+## Release v1.8.13
+
+- type:
+
+  - positionType (with optional)
+    ```ts
+    interface positionType {
+      x?: number;
+      y?: number;
+      z?: number;
+    }
+    ```
+  - nrrdSliceType, nrrdDragImageOptType and nrrdModeType
+
+    ```ts
+    type nrrdModeType = "mode0" | "mode1";
+
+    interface nrrdDragImageOptType {
+      mode?: nrrdModeType;
+      showNumber?: boolean;
+    }
+    interface nrrdSliceType {
+      x: any;
+      y: any;
+      z: any;
+    }
+    ```
+
+- copperMScene:
+
+  - updateCamera() same to copperScene
+
+  - resetView() same to copperScene
+
+  - setCameraPosition(position:positionType)
+    Give the position where you want the camera to be located. it will update the camera viewPoint and scene viewPoint. so that you can use resetView() function after.
+  - dragImage(slice: any, opts?: nrrdDragImageOptType)
+    - `slice`: give the nrrd slice, such as sliceX, sliceY, sliceZ
+    - `opts`: it's optional, default mode is mode1, default showNumber is false. if the showNumber is true, it will create div to display current slice number, you can edit the .copper3d_sliceNumber in css. such as:
+      ```css
+      .copper3d_sliceNumber {
+        top: 50px !important;
+        left: 150px !important;
+        border: 1px solid salmon;
+        border-radius: 10px;
+        padding: 5px;
+      }
+      ```
+  - loadNrrd(): callback function update, now it add a new parameter to return slices. how to use see tutorial 12.
+
+- copperNrrdLoader:
+
+  - dragImageWithMode(container: HTMLDivElement, controls: TrackballControls, slice: any, opts?: nrrdDragImageOptType): for copperMScene dragImage().
+
+  - createShowSliceNumberDiv(): for opts.showNumber = true
+
+- how to use drag
+
+  - step1: select the scene that you want to control with your mouse.
+  - step2: press any `shift` key on your keyborad.
+  - step3: `click` your mouse on nrrd image and `drag`.
+
+See tutorial 12 - drag and reset nrrd image.

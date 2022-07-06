@@ -96,11 +96,6 @@ export function isPickedModel(
   pickableObjects: THREE.Mesh[],
   mouseMovePosition: mouseMovePositionType
 ): THREE.Object3D<THREE.Event> | null {
-  // const raycaster = new THREE.Raycaster();
-
-  // container.onkeydown = (ev: KeyboardEvent) => {
-  //   console.log(ev);
-  // };
   intersects = baseRaycaster(
     camera,
     container,
@@ -116,4 +111,13 @@ export function isPickedModel(
   }
 
   return intersectedObject;
+}
+
+export function dragImage() {
+  document.addEventListener("keydown", (ev) => {
+    console.log(ev);
+  });
+  document.addEventListener("keyup", (ev) => {
+    console.log(ev);
+  });
 }
