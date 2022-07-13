@@ -22,7 +22,7 @@ export default class copperRenderer extends baseRenderer {
   setCurrentScene(sceneIn: copperScene) {
     if (sceneIn) {
       this.currentScene = sceneIn;
-      if (this.options) {
+      if (this.options?.guiOpen) {
         this.updateGui();
       }
       this.onWindowResize();
