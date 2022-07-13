@@ -346,3 +346,7 @@ See tutorial 12 - drag and reset nrrd image.
 ## Release v1.8.15
 
 - fixed addlight AmbientLight and DirectionalLight not work in GUI bug.
+
+## Release v1.8.16
+
+- fixed guiOpen = false bug.

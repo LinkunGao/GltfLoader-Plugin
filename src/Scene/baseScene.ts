@@ -36,15 +36,13 @@ export default class baseScene {
       0.1,
       500
     );
-    this.ambientLight = new THREE.AmbientLight(0x202020, 1);
-    this.directionalLight = new THREE.DirectionalLight(0xffffff, 2.5);
+    this.ambientLight = new THREE.AmbientLight(0x202020, 0.3);
+    this.directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
     this.vignette = createBackground({
       aspect: this.container.clientWidth / this.container.clientHeight,
       grainScale: IS_IOS ? 0 : 0.001,
       colors: [this.color1, this.color2],
     });
-    // this.vignette.name = "Vignette";
-    // this.vignette.renderOrder = -1;
     this.vignette.mesh.name = "Vignette";
     this.vignette.mesh.renderOrder = -1;
 
