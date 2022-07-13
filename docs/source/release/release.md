@@ -342,3 +342,7 @@ See tutorial 12 - drag and reset nrrd image.
 - update cursor, when user use drag nrrd function.
 - change cameraPositionType in copperMSceneRenderer to positionType.
 - clean code.
+
+## Release v1.8.15
+
+- fixed addlight AmbientLight and DirectionalLight not work in GUI bug.

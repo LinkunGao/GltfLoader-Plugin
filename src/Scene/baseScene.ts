@@ -55,6 +55,8 @@ export default class baseScene {
     this.copperControl.setCameraViewPoint();
     this.camera.position.z = 2;
 
+    this.scene.add(this.camera);
+
     this.renderer.setSize(
       this.container.clientWidth,
       this.container.clientHeight
@@ -153,9 +155,9 @@ export default class baseScene {
     this.directionalLight.position.set(0.5, 0, 0.866);
     this.camera.add(this.ambientLight);
     this.camera.add(this.directionalLight);
-    this.lights.push(hemiLight);
     this.lights.push(this.ambientLight);
     this.lights.push(this.directionalLight);
+    this.lights.push(hemiLight);
   }
   removeLights() {
     if (this.lights) {
@@ -172,7 +174,7 @@ export default class baseScene {
       this.removeLights();
     }
 
-    if (lights.length === 2) {
+    if (lights.length === 3) {
       lights[0].intensity = state.ambientIntensity;
       lights[0].color.setHex(state.ambientColor);
       lights[1].intensity = state.directIntensity;
