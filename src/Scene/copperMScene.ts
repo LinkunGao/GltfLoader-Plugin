@@ -18,6 +18,7 @@ import {
   copperNrrdLoader,
   copperNrrdLoader1,
   dragImageWithMode,
+  getWholeSlices,
   optsType,
 } from "../Loader/copperNrrdLoader";
 import { isIOS } from "../Utils/utils";
@@ -75,6 +76,7 @@ export default class copperMScene {
   init() {
     this.copperControl.setCameraViewPoint();
     this.camera.position.z = 2;
+    this.gui.domElement.style.zIndex = "100";
     this.container.appendChild(this.gui.domElement);
     this.addLights();
     // window.addEventListener("resize", this.onWindowResize, false);
@@ -212,7 +214,8 @@ export default class copperMScene {
   }
 
   loadNrrd1(url: string, callback?: (volume: any, gui?: GUI) => void) {
-    const h = 512; // frustum height
+    // const h = 512; // frustum height
+    const h = 1024;
     const aspect = window.innerWidth / window.innerHeight;
 
     this.camera = new THREE.OrthographicCamera(
@@ -223,7 +226,10 @@ export default class copperMScene {
       1,
       1000
     );
-    this.camera.position.set(-64, -64, 128);
+
+    this.camera.position.set(0, 0, 128);
+
+    // this.camera.position.set(-64, -64, 128);
     this.camera.up.set(0, 0, 1);
     this.controls.dispose();
     this.controls = new OrbitControls(this.camera, this.container);
@@ -241,6 +247,15 @@ export default class copperMScene {
       this.controls as TrackballControls,
       slice,
       opts
+    );
+  }
+
+  drawWholeNrrd(nrrdSlices: nrrdSliceType) {
+    getWholeSlices(
+      nrrdSlices,
+      this.scene,
+      this.gui,
+      this.controls as TrackballControls
     );
   }
 

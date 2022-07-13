@@ -66,11 +66,6 @@ export function copperNrrdLoader(
       Math.floor(volume.RASDimensions[0] / 2)
     );
 
-    // if (opts?.rotate?.sliceX?.direction === "y") {
-    //   sliceX.geometry.rotateY(opts?.rotate?.sliceX?.angle);
-    //   // slice.rotation.y = rotateInfo.angle;
-    // }
-
     nrrdMeshes = {
       x: sliceX.mesh,
       y: sliceY.mesh,
@@ -144,23 +139,42 @@ export function copperNrrdLoader1(
     clim1: 0,
     clim2: 1,
     renderStyle: "iso",
-    isothreshold: 0.15,
+    isothreshold: -0.15,
     colormap: "viridis",
   };
+  // const volconfig = {
+  //   clim1: 10,
+  //   clim2: 10,
+  //   renderStyle: "iso",
+  //   isothreshold: -0.15,
+  //   colormap: "viridis",
+  // };
 
   let cmtextures: { [key: string]: any };
   let material: THREE.ShaderMaterial;
 
   let mesh: THREE.Mesh;
 
-  new NRRDLoader().load(url, function (volume) {
+  new NRRDLoader().load(url, function (volume: any) {
+    volume.axisOrder = ["x", "y", "z"];
+
+    const is_Int16Array = volume.data.byteLength / volume.data.length === 2;
+    volume.lowerThreshold = 19;
+    volume.upperThreshold = 498;
+    volume.windowLow = 0;
+    volume.windowHigh = 354;
+
+    let data = is_Int16Array
+      ? int16ToFloat32(volume.data, 0, volume.data.length)
+      : volume.data;
+
     const texture = new THREE.Data3DTexture(
-      volume.data as any,
+      data as any,
       volume.xLength,
       volume.yLength,
       volume.zLength
     );
-    volume.axisOrder = ["x", "y", "z"];
+
     texture.format = THREE.RedFormat;
     texture.type = THREE.FloatType;
     texture.minFilter = texture.magFilter = THREE.LinearFilter;
@@ -170,7 +184,7 @@ export function copperNrrdLoader1(
     // colormap texture
     cmtextures = {
       viridis: new THREE.TextureLoader().load(cm_viridis),
-      gary: new THREE.TextureLoader().load(cm_gray),
+      gray: new THREE.TextureLoader().load(cm_gray),
     };
 
     // Material
@@ -184,6 +198,7 @@ export function copperNrrdLoader1(
       volume.yLength,
       volume.zLength
     );
+
     uniforms["u_clim"].value.set(volconfig.clim1, volconfig.clim2);
     uniforms["u_renderstyle"].value = volconfig.renderStyle === "mip" ? 0 : 1; // mip 0, iso 1
     uniforms["u_renderthreshold"].value = volconfig.isothreshold; // for iso render style
@@ -216,15 +231,17 @@ export function copperNrrdLoader1(
     scene.add(mesh);
 
     const gui = new GUI();
-    gui.add(volconfig, "clim1", 0, 1, 0.01).onChange(updateUniforms);
-    gui.add(volconfig, "clim2", 0, 1, 0.01).onChange(updateUniforms);
+    gui.add(volconfig, "clim1", -1, 1, 0.01).onChange(updateUniforms);
+    gui.add(volconfig, "clim2", -1, 1, 0.01).onChange(updateUniforms);
+    // gui.add(volconfig, "clim1", -50, 400, 1).onChange(updateUniforms);
+    // gui.add(volconfig, "clim2", -50, 400, 1).onChange(updateUniforms);
     gui
       .add(volconfig, "colormap", { gray: "gray", viridis: "viridis" })
       .onChange(updateUniforms);
     gui
       .add(volconfig, "renderStyle", { mip: "mip", iso: "iso" })
       .onChange(updateUniforms);
-    gui.add(volconfig, "isothreshold", 0, 1, 0.01).onChange(updateUniforms);
+    gui.add(volconfig, "isothreshold", -1, 1, 0.01).onChange(updateUniforms);
 
     function updateUniforms() {
       material.uniforms["u_clim"].value.set(volconfig.clim1, volconfig.clim2);
@@ -348,6 +365,76 @@ export function dragImageWithMode(
     };
   }
 }
+
+export function getWholeSlices(
+  nrrdSlices: nrrdSliceType,
+  scene: THREE.Scene,
+  gui: GUI,
+  controls: TrackballControls
+) {
+  let i = 0;
+  let timeX = nrrdSlices.x.volume.RASDimensions[0];
+  let timeY = nrrdSlices.y.volume.RASDimensions[1];
+  let timeZ = nrrdSlices.z.volume.RASDimensions[2];
+  let slicesX: Array<THREE.Mesh> = [];
+  let sliceGroup: THREE.Group = new THREE.Group();
+
+  const volume = nrrdSlices.x.volume;
+  volume.lowerThreshold = 19;
+  volume.upperThreshold = 498;
+  volume.windowLow = 0;
+  volume.windowHigh = 354;
+  for (let i = 0; i < timeZ; i++) {
+    const slicez = volume.extractSlice("z", i);
+    slicez.mesh.index = i;
+    sliceGroup.add(slicez.mesh);
+
+    slicesX.push(slicez.mesh);
+  }
+  for (let i = 0; i < timeX; i++) {
+    const slicex = volume.extractSlice("x", i);
+
+    sliceGroup.add(slicex.mesh);
+  }
+  for (let i = 0; i < timeY; i++) {
+    const slicey = volume.extractSlice("y", i);
+    sliceGroup.add(slicey.mesh);
+  }
+
+  scene.add(sliceGroup);
+
+  const zz = {
+    indexX: 0,
+  };
+
+  let a = 0;
+  gui
+    .add(zz, "indexX", 0, 50, 1)
+    .name("indexZ")
+    .onChange((index) => {
+      controls.enabled = false;
+
+      console.log(index);
+      // if (index < a) {
+      //   a = index;
+      //   slicesX[a].visible = true;
+      // } else if (index >= a) {
+      //   slicesX[a].visible = false;
+      //   a = index;
+      //   slicesX[a].visible = false;
+      // }
+
+      // if (slicesX[index]) {
+      //   controls.enabled = false;
+      //   console.log(slicesX[index]);
+      //   slicesX[index].visible = false;
+      //   // ? (slicesX[index].visible = false)
+      //   // : (slicesX[index].visible = true);
+      // }
+    });
+  gui.add(controls, "enabled").name("controls");
+}
+
 export function addBoxHelper(
   scene: copperScene,
   volume: any,
@@ -386,4 +473,19 @@ function createShowSliceNumberDiv() {
   sliceNumberDiv.style.left = "100px";
 
   return sliceNumberDiv;
+}
+
+function int16ToFloat32(
+  inputArray: Int16Array,
+  startIndex: number,
+  length: number
+): Float32Array {
+  var output = new Float32Array(inputArray.length - startIndex);
+  for (var i = startIndex; i < length; i++) {
+    var int = inputArray[i];
+    // If the high bit is on, then it is a negative number, and actually counts backwards.
+    var float = int >= 0x8000 ? -(0x10000 - int) / 0x8000 : int / 0x7fff;
+    output[i] = float;
+  }
+  return output;
 }
