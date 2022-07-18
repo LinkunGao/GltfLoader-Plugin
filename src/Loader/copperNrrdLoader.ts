@@ -11,9 +11,19 @@ import {
   nrrdDragImageOptType,
 } from "../types/types";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls";
+import copperMScene from "../Scene/copperMScene";
 
 let cube: THREE.Mesh;
 let gui: GUI;
+
+let Is_Shift_Pressed: boolean = false;
+let Is_Control_Enabled: boolean = true;
+let Is_Draw: boolean = false;
+const CircleGeometry = new THREE.RingGeometry(5, 6, 30);
+const CircleMaterial = new THREE.MeshBasicMaterial({
+  transparent: true,
+  side: THREE.DoubleSide,
+});
 
 export interface optsType {
   openGui: boolean;
@@ -291,22 +301,28 @@ export function dragImageWithMode(
     container.appendChild(showNumberDiv);
   }
 
-  container.onkeydown = (ev: KeyboardEvent) => {
+  container.addEventListener("keydown", (ev: KeyboardEvent) => {
     if (ev.key === "Shift") {
       controls.enabled = false;
       container.style.cursor = "pointer";
+      Is_Shift_Pressed = true;
       container.addEventListener("mousedown", handleOnMouseDown, false);
       container.addEventListener("mouseup", handleOnMouseUp, false);
     }
-  };
-  container.onkeyup = (ev: KeyboardEvent) => {
+  });
+
+  container.addEventListener("keyup", (ev: KeyboardEvent) => {
     if (ev.key === "Shift") {
-      controls.enabled = true;
+      if (!Is_Draw) {
+        controls.enabled = true;
+      }
       container.style.cursor = "";
+      Is_Shift_Pressed = false;
       container.removeEventListener("mousedown", handleOnMouseDown, false);
       container.removeEventListener("mouseup", handleOnMouseUp, false);
+      container.removeEventListener("mousemove", handleOnMouseMove, false);
     }
-  };
+  });
 
   if (opts?.mode === "mode0") {
     handleOnMouseDown = (ev: MouseEvent) => {
@@ -336,7 +352,7 @@ export function dragImageWithMode(
     let oldIndex: number;
     handleOnMouseDown = (ev: MouseEvent) => {
       y = ev.offsetY / h;
-      container.addEventListener("mousemove", handleOnMouseMove);
+      container.addEventListener("mousemove", handleOnMouseMove, false);
       oldIndex = slice.index;
     };
     handleOnMouseMove = (ev: MouseEvent) => {
@@ -361,7 +377,7 @@ export function dragImageWithMode(
       }
     };
     handleOnMouseUp = (ev: MouseEvent) => {
-      container.removeEventListener("mousemove", handleOnMouseMove);
+      container.removeEventListener("mousemove", handleOnMouseMove, false);
     };
   }
 }
@@ -435,6 +451,174 @@ export function getWholeSlices(
   gui.add(controls, "enabled").name("controls");
 }
 
+export function draw(
+  container: HTMLDivElement,
+  controls: TrackballControls,
+  sceneIn: copperMScene,
+  slice: any,
+  gui: GUI,
+  guiContainer: HTMLDivElement
+) {
+  let circles: THREE.Mesh[] = [];
+  let modeFolder: GUI;
+  let modeState: string = "mode0";
+  const state = {
+    mode: "mode0",
+    undo: function () {
+      undoLastDrawing();
+    },
+    clearAll: function () {
+      removeAllDrawing();
+    },
+    resetView: function () {
+      sceneIn.resetView();
+    },
+  };
+  let handleOnMouseClick: (ev: MouseEvent) => void;
+  let defaultOnMouseClick: (ev: MouseEvent) => void;
+  let mode1OnMouseClick: (ev: MouseEvent) => void;
+  let mode2OnMouseClick: (ev: MouseEvent) => void;
+  /**
+   * GUI
+   */
+
+  gui
+    .add(state, "mode", { mode0: "mode0", mode1: "mode1", mode2: "mode2" })
+    .onChange((mode) => {
+      modeState = mode;
+      removeModeChilden();
+      container.removeEventListener("click", handleOnMouseClick, false);
+      if (mode === "mode0") {
+        addMode1();
+        if (!Is_Control_Enabled) {
+          mode0Controller();
+        }
+      } else if (mode === "mode1" && !Is_Control_Enabled) {
+        mode1Controller();
+      }
+    });
+
+  gui.add(state, "undo");
+  gui.add(state, "clearAll");
+  gui.add(state, "resetView");
+
+  modeFolder = gui.addFolder("Mode Parameters");
+
+  const stateMode1 = {
+    color: "#47FF63",
+    radius: 5,
+  };
+  function addMode1() {
+    modeFolder
+      .add(stateMode1, "radius")
+      .min(1)
+      .max(9)
+      .step(0.01)
+      .onChange(regenerateGeometry);
+    modeFolder.addColor(stateMode1, "color");
+  }
+  addMode1();
+
+  /***
+   * mode controls
+   */
+
+  function mode0Controller() {
+    handleOnMouseClick = defaultOnMouseClick;
+    container.addEventListener("click", handleOnMouseClick, false);
+  }
+  function mode1Controller() {
+    container.removeEventListener("click", handleOnMouseClick, false);
+    handleOnMouseClick = (ev: MouseEvent) => {
+      console.log("mode1");
+    };
+    container.addEventListener("click", handleOnMouseClick, false);
+  }
+  /**
+   * mode1
+   * */
+  defaultOnMouseClick = handleOnMouseClick = (ev: MouseEvent) => {
+    // ev.stopPropagation();
+    if (!Is_Shift_Pressed) {
+      const x = ev.offsetX;
+      const y = ev.offsetY;
+      let worldPos: THREE.Vector3 = new THREE.Vector3();
+      const { intersectedObject, intersects } = sceneIn.pickSpecifiedModel(
+        slice.mesh,
+        { x, y }
+      );
+      if (intersects.length > 0) {
+        const p = intersects[0].point;
+        worldPos.copy(p);
+        const circle = createRingCircle(stateMode1.color);
+        circle.position.set(worldPos.x, worldPos.y, worldPos.z + 0.1);
+        circles.push(circle);
+        sceneIn.scene.add(circle);
+      }
+    }
+  };
+  container.addEventListener("keypress", (ev: KeyboardEvent) => {
+    if (ev.key === "d") {
+      Is_Control_Enabled = !Is_Control_Enabled;
+      controls.enabled = Is_Control_Enabled;
+      sceneIn.changedControlsState(Is_Control_Enabled);
+      if (!Is_Draw) {
+        Is_Draw = true;
+        switch (modeState) {
+          case "mode0":
+            mode0Controller();
+            break;
+          case "mode1":
+            mode1Controller();
+            break;
+          default:
+            mode0Controller();
+            break;
+        }
+      } else {
+        Is_Draw = false;
+        container.removeEventListener("click", handleOnMouseClick, false);
+      }
+    }
+  });
+
+  function undoLastDrawing() {
+    const old = circles.pop();
+    old?.geometry.dispose();
+    !!old && sceneIn.scene.remove(old as THREE.Mesh);
+  }
+
+  function removeAllDrawing() {
+    circles.forEach((mesh) => {
+      !!mesh && sceneIn.scene.remove(mesh);
+    });
+    circles = [];
+  }
+
+  function removeModeChilden() {
+    const subControllers = modeFolder.__controllers;
+    subControllers.forEach((c) => {
+      setTimeout(() => {
+        modeFolder.remove(c);
+      }, 100);
+    });
+  }
+
+  function regenerateGeometry(radius: number) {
+    const innerRadius = radius;
+    const outerRadius = radius + 1;
+    const newCircleGeometry = new THREE.RingGeometry(
+      innerRadius,
+      outerRadius,
+      30
+    );
+    circles.forEach((mesh) => {
+      mesh.geometry.dispose();
+      mesh.geometry = newCircleGeometry;
+    });
+  }
+}
+
 export function addBoxHelper(
   scene: copperScene,
   volume: any,
@@ -488,4 +672,30 @@ function int16ToFloat32(
     output[i] = float;
   }
   return output;
+}
+
+/**
+ *
+ * @param {number} r - Radius
+ * @param {string} color - e.g., 0xffffff
+ * @returns {object} - A Circle mesh
+ */
+function createCircle(r: number, color: string) {
+  const geometry = new THREE.CircleGeometry(r * 1.6, 30);
+  const material = new THREE.MeshBasicMaterial({
+    color: color,
+    transparent: true,
+    side: THREE.DoubleSide,
+  });
+  return new THREE.Mesh(geometry, material);
+}
+
+/**
+ *
+ * @param {string} color  - e.g., 0xffffff
+ * @returns {object} - A ring circle mesh
+ */
+function createRingCircle(color: string) {
+  CircleMaterial.color = new THREE.Color(color);
+  return new THREE.Mesh(CircleGeometry, CircleMaterial);
 }

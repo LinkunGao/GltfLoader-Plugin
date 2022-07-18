@@ -17,7 +17,7 @@ export default class copperRendererOnDemond extends baseRenderer {
   setCurrentScene(sceneIn: copperSceneOnDemond) {
     if (sceneIn) {
       this.currentScene = sceneIn;
-      if (this.options) {
+      if (this.options?.guiOpen) {
         this.updateGui();
       }
     }

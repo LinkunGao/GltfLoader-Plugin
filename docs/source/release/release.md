@@ -350,3 +350,9 @@ See tutorial 12 - drag and reset nrrd image.
 ## Release v1.8.16
 
 - fixed guiOpen = false bug.
+
+## Release v1.8.17
+
+- fixed copperMScene gui bug
+- developing draw gui
+- draw gui mode1.
