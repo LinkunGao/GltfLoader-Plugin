@@ -6,7 +6,7 @@ import { TrackballControls } from "three/examples/jsm/controls/TrackballControls
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import { copperGltfLoader } from "../Loader/copperGltfLoader";
-import { pickModelDefault, isPickedModel } from "../Utils/raycaster";
+import { pickModelDefault, isPickedModel, throttle } from "../Utils/raycaster";
 import {
   nrrdMeshesType,
   mouseMovePositionType,
@@ -18,15 +18,21 @@ import {
   copperNrrdLoader,
   copperNrrdLoader1,
   dragImageWithMode,
+  draw,
   getWholeSlices,
   optsType,
 } from "../Loader/copperNrrdLoader";
 import { isIOS } from "../Utils/utils";
+import { Static } from "vue";
 
 const IS_IOS = isIOS();
 
 export default class copperMScene {
-  gui: GUI = new GUI();
+  gui: GUI = new GUI({
+    width: 260,
+    autoPlace: false,
+  });
+  // gui: GUI = new GUI();
   container: HTMLDivElement;
   renderer: THREE.WebGLRenderer;
   scene: THREE.Scene = new THREE.Scene();
@@ -41,12 +47,14 @@ export default class copperMScene {
   content: THREE.Group = new THREE.Group();
   isHalfed: boolean = false;
   controls: TrackballControls | OrbitControls;
-  private pickableObjects: THREE.Mesh[] = [];
 
+  private pickableObjects: THREE.Mesh[] = [];
   private color1: string = "#5454ad";
   private color2: string = "#18e5a7";
   private lights: any[] = [];
   private renderNrrdVolume: boolean = false;
+  private guiContainer: HTMLDivElement = document.createElement("div");
+  private Is_Control_Enabled: boolean = true;
 
   constructor(container: HTMLDivElement, renderer: THREE.WebGLRenderer) {
     this.container = container;
@@ -70,15 +78,38 @@ export default class copperMScene {
     this.vignette.mesh.renderOrder = -1;
 
     this.copperControl = new Controls(this.camera);
-    this.init();
     this.controls = new TrackballControls(this.camera, container);
+    this.init();
   }
   init() {
     this.copperControl.setCameraViewPoint();
     this.camera.position.z = 2;
-    this.gui.domElement.style.zIndex = "100";
-    this.container.appendChild(this.gui.domElement);
+    this.controls.rotateSpeed = 0.001;
+    this.guiContainer.style.position = "fixed";
+    this.guiContainer.style.top = "0";
+    this.guiContainer.style.right = "0";
+    this.guiContainer.style.zIndex = "100";
+    this.guiContainer.appendChild(this.gui.domElement);
+    this.container.appendChild(this.guiContainer);
+
+    this.Is_Control_Enabled = this.controls.enabled;
+    this.guiContainer.addEventListener(
+      "mousedown",
+      () => {
+        this.controls.enabled = false;
+      },
+      true
+    );
+    this.guiContainer.addEventListener(
+      "mouseup",
+      () => {
+        if (this.Is_Control_Enabled) this.controls.enabled = true;
+      },
+      true
+    );
+
     this.addLights();
+
     // window.addEventListener("resize", this.onWindowResize, false);
   }
   createDemoMesh() {
@@ -95,6 +126,11 @@ export default class copperMScene {
   addObject(obj: any) {
     this.scene.add(obj);
   }
+
+  changedControlsState(state: boolean) {
+    this.Is_Control_Enabled = state;
+  }
+
   loadGltf(url: string, callback?: (content: THREE.Group) => void) {
     const loader = copperGltfLoader(this.renderer);
 
@@ -247,6 +283,17 @@ export default class copperMScene {
       this.controls as TrackballControls,
       slice,
       opts
+    );
+  }
+
+  drawImage(slice: any, sceneIn: copperMScene) {
+    draw(
+      this.container,
+      this.controls as TrackballControls,
+      sceneIn,
+      slice,
+      this.gui,
+      this.guiContainer
     );
   }
 

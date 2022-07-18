@@ -61,7 +61,7 @@ export function pickModelDefault(
   );
 }
 
-function throttle(callback: (event: MouseEvent) => void, wait: number) {
+export function throttle(callback: (event: MouseEvent) => void, wait: number) {
   let start: number = 0;
   return function (event: MouseEvent) {
     const current: number = Date.now();
@@ -95,7 +95,7 @@ export function isPickedModel(
   container: HTMLDivElement,
   pickableObjects: THREE.Mesh[],
   mouseMovePosition: mouseMovePositionType
-): THREE.Object3D<THREE.Event> | null {
+) {
   intersects = baseRaycaster(
     camera,
     container,
@@ -110,7 +110,7 @@ export function isPickedModel(
     intersectedObject = null;
   }
 
-  return intersectedObject;
+  return { intersectedObject, intersects };
 }
 
 export function dragImage() {
