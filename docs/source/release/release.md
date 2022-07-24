@@ -356,3 +356,13 @@ See tutorial 12 - drag and reset nrrd image.
 - fixed copperMScene gui bug
 - developing draw gui
 - draw gui mode1.
+
+## Release v1.8.18
+
+- developed draw image mode 2 and mode3
+- now user can draw on canvas.
+  - change the color.
+  - change the drawing size.
+  - use eraser.
+  - clear all drawing.
+  - download current image.

@@ -120,6 +120,18 @@ interface positionType {
   z?: number;
 }
 
+// drawing on canvas
+interface paintImagesType {
+  x: Array<paintImageType>;
+  y: Array<paintImageType>;
+  z: Array<paintImageType>;
+}
+
+interface paintImageType {
+  index: number;
+  image: HTMLImageElement;
+}
+
 export type {
   SceneMapType,
   optType,
@@ -138,4 +150,6 @@ export type {
   kiwriousType,
   mouseMovePositionType,
   positionType,
+  paintImagesType,
+  paintImageType,
 };

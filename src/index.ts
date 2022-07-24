@@ -11,7 +11,11 @@ import {
   convert3DPostoScreenPos,
   convertScreenPosto3DPos,
 } from "./Utils/add3DLabel";
-import { addBoxHelper, optsType } from "./Loader/copperNrrdLoader";
+import {
+  addBoxHelper,
+  optsType,
+  loadDrawMode1Texture,
+} from "./Loader/copperNrrdLoader";
 import { fullScreenListenner } from "./Utils/utils";
 import copperRendererOnDemond from "./Renderer/copperRendererOnDemond";
 import copperSceneOnDemond from "./Scene/copperSceneOnDemond";
@@ -32,7 +36,7 @@ import {
 import "./css/style.css";
 
 console.log(
-  "%cMedtech Heart Plugin %cBeta:v1.8.16",
+  "%cMedtech Heart Plugin %cBeta:v1.8.18",
   "padding: 3px;color:white; background:#023047",
   "padding: 3px;color:white; background:#219EBC"
 );
@@ -46,6 +50,7 @@ export {
   convert3DPostoScreenPos,
   convertScreenPosto3DPos,
   addBoxHelper,
+  loadDrawMode1Texture,
   fullScreenListenner,
   configKiwriousHeart,
   copperScene,

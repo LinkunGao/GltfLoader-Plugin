@@ -23,7 +23,6 @@ import {
   optsType,
 } from "../Loader/copperNrrdLoader";
 import { isIOS } from "../Utils/utils";
-import { Static } from "vue";
 
 const IS_IOS = isIOS();
 
@@ -292,8 +291,7 @@ export default class copperMScene {
       this.controls as TrackballControls,
       sceneIn,
       slice,
-      this.gui,
-      this.guiContainer
+      this.gui
     );
   }
 
