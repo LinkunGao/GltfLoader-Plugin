@@ -8,15 +8,6 @@ on:
     types: [created]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - run: npm ci
-      - run: npm test
 
   publish-npm:
     needs: build
@@ -27,8 +18,11 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
-      - run: npm ci
-      - run: npm run build 
-      - run: npm publish
+       - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: cp LICENSE dist/LICENSE
+      - run: cp README.md dist/README.md
+      - run: jq 'del(.devDependencies) | del(.scripts)' package.json > dist/package.json
+      - run: npm publish ./dist
         env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
