@@ -20,9 +20,6 @@ jobs:
 
       - run: npm ci --ignore-scripts
       - run: npm run build
-      - run: cp LICENSE dist/LICENSE
-      - run: cp README.md dist/README.md
-      - run: jq 'del(.devDependencies) | del(.scripts)' package.json > dist/package.json
-      - run: npm publish ./dist
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
