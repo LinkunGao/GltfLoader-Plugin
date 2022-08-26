@@ -26,6 +26,7 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
+      - run: npm run build
       - run: cp LICENSE dist/LICENSE
       - run: cp README.md dist/README.md
       - run: jq 'del(.devDependencies) | del(.scripts)' package.json > dist/package.json
