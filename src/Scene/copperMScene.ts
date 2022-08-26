@@ -23,7 +23,6 @@ import {
   optsType,
 } from "../Loader/copperNrrdLoader";
 import { isIOS } from "../Utils/utils";
-import { Static } from "vue";
 
 const IS_IOS = isIOS();
 
